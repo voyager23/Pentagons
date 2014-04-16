@@ -26,8 +26,9 @@
 #include <stdlib.h>
 #include <string.h>
 
+//------------------------Globals---------------------------------------
 typedef struct {
-	int node_id;	// May not be useful
+	int node_id;	//???
 	int primes[4];
 } Node;
 
@@ -45,12 +46,13 @@ int data[20] = {2,3,5,7,3,11,13,17,11,19,23,5,19,29,7,13,29,2,17,23};
 Pentagon *BaseList[10];
 Pentagon *CaleyTable[10][10];
 
-//------------------------Utility Functions-----------------------------
+//------------------------Utility Function Declarations-----------------
 void prt_Node(Node*);
 void prt_Pentagon(Pentagon*);
 void rotate(Pentagon*,int);
 void mirror(Pentagon*,int);
-
+Pentagon* find_pentagon(Pentagon**, Pentagon*);
+//------------------------Utility Function Definitions------------------
 void prt_Node(Node *n) {
 	int i;
 	//printf("%02d -- ", n->node_id);
@@ -112,6 +114,17 @@ void mirror(Pentagon *p,int axis){
 	}		
 }
 
+Pentagon* find_pentagon(Pentagon **BaseList, Pentagon *b) {
+	int i,n,p,found;
+	Pentagon *a;
+	for(i=0;i<10;i++) {
+		a = BaseList[i];
+		
+		for(n=0;n<5;n++) {
+			for(p=0;p<4;p++)
+				if(a->nodes[n]->primes[p] != b->nodes[n]->primes[p]) break;
+		}
+}
 //----------------------------------------------------------------------
 
 int main(int argc, char **argv)
@@ -119,6 +132,7 @@ int main(int argc, char **argv)
 	int i,j;	// general purpose indices	
 	Pentagon *identity = (Pentagon*)malloc(sizeof(Pentagon));
 	Pentagon *working = (Pentagon*)malloc(sizeof(Pentagon));
+	Pentagon *located = NULL;
 	
 	// Create the Identity pentagon
 	strcpy(identity->pentagon_id, "I");
@@ -128,6 +142,7 @@ int main(int argc, char **argv)
 		for(j=0;j<4;j++) identity->nodes[i]->primes[j] = data[(i*4)+j];
 	};	
 	BaseList[0] = identity;
+	
 	// BaseList[1-4] are the rotations
 	for(j=1;j<5;j++) {
 		working = (Pentagon*)malloc(sizeof(Pentagon));
@@ -135,7 +150,8 @@ int main(int argc, char **argv)
 		rotate(working,j);
 		sprintf(working->pentagon_id, "R%d", j);
 		BaseList[j] = working;
-	}	
+	}
+		
 	// BaseList[5-9] are the reflections about a line
 	// from vertex to opposite mid-point.
 	for(j=5;j<10;j++) {
@@ -149,7 +165,27 @@ int main(int argc, char **argv)
 	// print the BaseList
 	for(i=0;i<10;i++) prt_Pentagon(BaseList[i]);
 	
+	// Create the Caley Table
+	
+	for(i=0;i<10;i++) {
+		// first column entry is Identity
+		working = (Pentagon*)malloc(sizeof(Pentagon));
+		memcpy(working, BaseList[0], sizeof(Pentagon));
+		sprintf(working->pentagon_id, "I");
+		CaleyTable[i][0] = working;
 		
+		// CaleyTable[i][1-4] are the rotations
+		for(j=1;j<5;j++) {
+			working = (Pentagon*)malloc(sizeof(Pentagon));
+			memcpy(working, BaseList[0], sizeof(Pentagon));
+			rotate(working,j);
+			// find the pentagon in BaseList corresponding to working
+			// May be NULL
+			CaleyTable[i][j] = find_pentagon(BaseList, working);
+		}
+		
+		
+	} //for(i=0;i<10;i++)		
 	return 0;
 }
 
