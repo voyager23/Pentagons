@@ -26,7 +26,7 @@
 #include <stdlib.h>
 
 typedef struct {
-	int node_id;
+	int node_id;	// May not be useful
 	int primes[4];
 } Node;
 
@@ -44,6 +44,8 @@ int data[20] = {2,3,5,7,3,11,13,17,11,19,23,5,19,29,7,13,29,2,17,23};
 //------------------------Utility Functions-----------------------------
 void prt_Node(Node*);
 void prt_Pentagon(Pentagon*);
+void rotate(Pentagon*,int);
+void mirror(Pentagon*,int);
 
 void prt_Node(Node *n) {
 	int i;
@@ -57,6 +59,52 @@ void prt_Pentagon(Pentagon *p) {
 	for(i=0;i<5;i++) prt_Node(p->nodes[i]);
 	printf("\n");
 };
+
+void rotate(Pentagon *p,int n){
+	Node *temp = NULL;
+	int i,tmp;
+	// Sanity Checks
+	if(p==NULL) {printf("\nrotate: p is NULL pointer.\n");exit(1);}
+	if((n<0)||(n>4)) {printf("rotate: n %d out of bounds.\n",n);exit(1);}
+		while(n>0) {
+		temp = p->nodes[0];
+		for(i=1;i<5;i++) p->nodes[i-1] = p->nodes[i];
+		p->nodes[4] = temp;
+		n--;
+	}
+}
+void mirror(Pentagon *p,int axis){	
+	// Note: This Function Invalidates The Node_Id
+	Node *temp = NULL;
+	int i,tmp;
+			
+	// Sanity Checks
+	if(p==NULL) {printf("\nmirror: p is NULL pointer.\n");exit(1);}
+	if((axis<0)||(axis>4)) {printf("mirror: axis %d out of bounds.\n",axis);exit(1);}
+	
+	// swap 'inner pair'
+	temp = p->nodes[ (axis+1)%5 ];
+	p->nodes[ (axis+1)%5 ] = p->nodes[ (axis+4)%5 ];
+	p->nodes[ (axis+4)%5 ] = temp;
+	// swap 'outer pair'
+	temp = p->nodes[ (axis+2)%5 ];
+	p->nodes[ (axis+2)%5 ] = p->nodes[ (axis+3)%5 ];
+	p->nodes[ (axis+3)%5 ] = temp;
+	// for each node swap p0/p1 and p2/p3
+	for(i=0;i<5;i++) {
+		
+		// Note: This Function Invalidates The Node_Id
+		p->nodes[i]->node_id = -1;
+		// ...........................................
+		
+		tmp = p->nodes[i]->primes[0];
+		p->nodes[i]->primes[0] = p->nodes[i]->primes[1];
+		p->nodes[i]->primes[1] = tmp;
+		tmp = p->nodes[i]->primes[2];
+		p->nodes[i]->primes[2] = p->nodes[i]->primes[3];
+		p->nodes[i]->primes[3] = tmp;
+	}		
+}
 
 //----------------------------------------------------------------------
 
@@ -74,7 +122,22 @@ int main(int argc, char **argv)
 		for(j=0;j<4;j++) pentagon->nodes[i]->primes[j] = data[(i*4)+j];
 	};
 	
+	// Check configuration
 	prt_Pentagon(pentagon);
+	
+	// call mirror
+	rotate(pentagon, 2);
+	
+	// Check configuration
+	prt_Pentagon(pentagon);
+	
+		
+	// call mirror
+	rotate(pentagon, 3);
+	
+	// Check configuration
+	prt_Pentagon(pentagon);
+	
 		
 	return 0;
 }
