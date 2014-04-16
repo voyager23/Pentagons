@@ -1,5 +1,5 @@
 /*
- * dev1.c
+ * dev2.c
  * 
  * Copyright 2014 Michael Tate <mike@wingnut>
  * 
@@ -42,6 +42,9 @@ enum p_n {
 
 int data[20] = {2,3,5,7,3,11,13,17,11,19,23,5,19,29,7,13,29,2,17,23};
 
+Pentagon *BaseList[10];
+Pentagon *CaleyTable[10][10];
+
 //------------------------Utility Functions-----------------------------
 void prt_Node(Node*);
 void prt_Pentagon(Pentagon*);
@@ -50,7 +53,7 @@ void mirror(Pentagon*,int);
 
 void prt_Node(Node *n) {
 	int i;
-	printf("%02d -- ", n->node_id);
+	//printf("%02d -- ", n->node_id);
 	for(i=0;i<4;i++) printf("%02d ", n->primes[i]);
 	printf("\n");	
 };
@@ -63,6 +66,7 @@ void prt_Pentagon(Pentagon *p) {
 };
 
 void rotate(Pentagon *p,int n){
+	// 0 <= n <= 4
 	Node *temp = NULL;
 	int i,tmp;
 	// Sanity Checks
@@ -112,33 +116,38 @@ void mirror(Pentagon *p,int axis){
 
 int main(int argc, char **argv)
 {
-	int i,j;	// general purpose index
+	int i,j;	// general purpose indices	
+	Pentagon *identity = (Pentagon*)malloc(sizeof(Pentagon));
+	Pentagon *working = (Pentagon*)malloc(sizeof(Pentagon));
 	
-	// For testing we need 5 Nodes and 1 Pentagon;
-	Pentagon *pentagon = (Pentagon*)malloc(sizeof(Pentagon));
-	strcpy(pentagon->pentagon_id, "Test");
-	
+	// Create the Identity pentagon
+	strcpy(identity->pentagon_id, "I");
 	for(i=0;i<5;i++) {		
-		pentagon->nodes[i] = (Node*)malloc(sizeof(Node));
-		pentagon->nodes[i]->node_id = i;
-		for(j=0;j<4;j++) pentagon->nodes[i]->primes[j] = data[(i*4)+j];
-	};
+		identity->nodes[i] = (Node*)malloc(sizeof(Node));
+		identity->nodes[i]->node_id = i;
+		for(j=0;j<4;j++) identity->nodes[i]->primes[j] = data[(i*4)+j];
+	};	
+	BaseList[0] = identity;
+	// BaseList[1-4] are the rotations
+	for(j=1;j<5;j++) {
+		working = (Pentagon*)malloc(sizeof(Pentagon));
+		memcpy(working, BaseList[0], sizeof(Pentagon));
+		rotate(working,j);
+		sprintf(working->pentagon_id, "R%d", j);
+		BaseList[j] = working;
+	}	
+	// BaseList[5-9] are the reflections about a line
+	// from vertex to opposite mid-point.
+	for(j=5;j<10;j++) {
+		working = (Pentagon*)malloc(sizeof(Pentagon));
+		memcpy(working, BaseList[0], sizeof(Pentagon));
+		mirror(working, (j-5));
+		sprintf(working->pentagon_id, "D%d", (j-5));
+		BaseList[j] = working;
+	}
 	
-	// Check configuration
-	prt_Pentagon(pentagon);
-	
-	// call mirror
-	rotate(pentagon, 2);
-	
-	// Check configuration
-	prt_Pentagon(pentagon);
-	
-		
-	// call mirror
-	rotate(pentagon, 3);
-	
-	// Check configuration
-	prt_Pentagon(pentagon);
+	// print the BaseList
+	for(i=0;i<10;i++) prt_Pentagon(BaseList[i]);
 	
 		
 	return 0;
