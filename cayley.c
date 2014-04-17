@@ -42,6 +42,7 @@ enum p_n {
 };
 
 int data[20] = {2,3,5,7,3,11,13,17,11,19,23,5,19,29,7,13,29,2,17,23};
+char *Id_Str[10] = {"**","R1","R2","R3","R3","D0","D1","D2","D3","D4"};
 
 Pentagon *BaseList[10];
 Pentagon *CaleyTable[10][10];
@@ -52,6 +53,7 @@ void prt_Pentagon(Pentagon*);
 void rotate(Pentagon*,int);
 void mirror(Pentagon*,int);
 Pentagon* find_pentagon(Pentagon**, Pentagon*);
+
 //------------------------Utility Function Definitions------------------
 void prt_Node(Node *n) {
 	int i;
@@ -186,9 +188,11 @@ int main(int argc, char **argv)
 		}	
 	} //for(i=0;i<10;i++)
 	free(working);
-	
+	printf("\n o  ");
+	for(j=0;j<10;j++) printf("%s  ", Id_Str[j]);
+	printf("\n");
 	for(i=0;i<10;i++) {
-		printf("\nxx  ");
+		printf("\n%s  ", Id_Str[i]);
 		for(j=0;j<10;j++) {
 			printf("%s  ", CaleyTable[i][j]->pentagon_id);			
 		}		
