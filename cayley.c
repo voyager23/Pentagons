@@ -42,7 +42,7 @@ enum p_n {
 };
 
 int data[20] = {2,3,5,7,3,11,13,17,11,19,23,5,19,29,7,13,29,2,17,23};
-char *Id_Str[10] = {"**","R1","R2","R3","R3","D0","D1","D2","D3","D4"};
+
 
 Pentagon *BaseList[10];
 Pentagon *CaleyTable[10][10];
@@ -129,6 +129,24 @@ Pentagon* find_pentagon(Pentagon **BaseList, Pentagon *b) {
 		return NULL;
 }
 
+void prt_CaleyTable(Pentagon *t[10][10]);
+
+void prt_CaleyTable(Pentagon *t[10][10]) {
+	int i,j;
+	char *Id_Str[10] = {"**","R1","R2","R3","R3","D0","D1","D2","D3","D4"};
+	
+	printf("\n o  ");
+	for(j=0;j<10;j++) printf("%s  ", Id_Str[j]);
+	printf("\n");
+	for(i=0;i<10;i++) {
+		printf("\n%s  ", Id_Str[i]);
+		for(j=0;j<10;j++) {
+			printf("%s  ", t[i][j]->pentagon_id);			
+		}		
+		printf("\n");
+	}
+}
+
 //----------------------------------------------------------------------
 
 int main(int argc, char **argv)
@@ -165,11 +183,9 @@ int main(int argc, char **argv)
 		BaseList[j] = working;
 	}
 	
-	// print the BaseList
-	// for(i=0;i<10;i++) prt_Pentagon(BaseList[i]);
+	// -------------Create the Caley Table----------------
 	
-	// -----Create the Caley Table-----
-	working = (Pentagon*)malloc(sizeof(Pentagon));
+	working = (Pentagon*)malloc(sizeof(Pentagon)); //scratchpad
 	// Table row indexed by i
 	for(i=0;i<10;i++) {
 		// Table column indexed by j
@@ -188,16 +204,9 @@ int main(int argc, char **argv)
 		}	
 	} //for(i=0;i<10;i++)
 	free(working);
-	printf("\n o  ");
-	for(j=0;j<10;j++) printf("%s  ", Id_Str[j]);
-	printf("\n");
-	for(i=0;i<10;i++) {
-		printf("\n%s  ", Id_Str[i]);
-		for(j=0;j<10;j++) {
-			printf("%s  ", CaleyTable[i][j]->pentagon_id);			
-		}		
-		printf("\n");
-	}
+	
+	prt_CaleyTable(CaleyTable);
+	
 	return 0;
 }
 
