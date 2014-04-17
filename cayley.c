@@ -1,5 +1,5 @@
 /*
- * dev2.c
+ * cayley.c
  * 
  * Copyright 2014 Michael Tate <mike@wingnut>
  * 
@@ -21,6 +21,7 @@
  * 
  */
 
+//----------------------------------------------------------------------
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -28,7 +29,6 @@
 
 //------------------------Globals---------------------------------------
 typedef struct {
-	int node_id;	//???
 	int primes[4];
 } Node;
 
@@ -82,7 +82,6 @@ void rotate(Pentagon *p,int n){
 	}
 }
 void mirror(Pentagon *p,int axis){	
-	// Note: This Function Invalidates The Node_Id
 	Node *temp = NULL;
 	int i,tmp;
 			
@@ -100,11 +99,6 @@ void mirror(Pentagon *p,int axis){
 	p->nodes[ (axis+3)%5 ] = temp;
 	// for each node swap p0/p1 and p2/p3
 	for(i=0;i<5;i++) {
-		
-		// Note: This Function Invalidates The Node_Id
-		p->nodes[i]->node_id = -1;
-		// ...........................................
-		
 		tmp = p->nodes[i]->primes[0];
 		p->nodes[i]->primes[0] = p->nodes[i]->primes[1];
 		p->nodes[i]->primes[1] = tmp;
@@ -119,12 +113,20 @@ Pentagon* find_pentagon(Pentagon **BaseList, Pentagon *b) {
 	Pentagon *a;
 	for(i=0;i<10;i++) {
 		a = BaseList[i];
-		
-		for(n=0;n<5;n++) {
-			for(p=0;p<4;p++)
-				if(a->nodes[n]->primes[p] != b->nodes[n]->primes[p]) break;
+		found = 1;		
+		for(n=0;n<4;n++) {
+			if((a->nodes[n]->primes[0])!=(b->nodes[n]->primes[0])||
+				(a->nodes[n]->primes[2])!=(b->nodes[n]->primes[2])) {
+					found = 0;
+					break;
+				}
 		}
+		// test for found
+		if(found==1) return a;			
+	}
+		return NULL;
 }
+
 //----------------------------------------------------------------------
 
 int main(int argc, char **argv)
@@ -135,10 +137,9 @@ int main(int argc, char **argv)
 	Pentagon *located = NULL;
 	
 	// Create the Identity pentagon
-	strcpy(identity->pentagon_id, "I");
+	strcpy(identity->pentagon_id, "**");
 	for(i=0;i<5;i++) {		
 		identity->nodes[i] = (Node*)malloc(sizeof(Node));
-		identity->nodes[i]->node_id = i;
 		for(j=0;j<4;j++) identity->nodes[i]->primes[j] = data[(i*4)+j];
 	};	
 	BaseList[0] = identity;
@@ -163,29 +164,36 @@ int main(int argc, char **argv)
 	}
 	
 	// print the BaseList
-	for(i=0;i<10;i++) prt_Pentagon(BaseList[i]);
+	// for(i=0;i<10;i++) prt_Pentagon(BaseList[i]);
 	
-	// Create the Caley Table
-	
+	// -----Create the Caley Table-----
+	working = (Pentagon*)malloc(sizeof(Pentagon));
+	// Table row indexed by i
 	for(i=0;i<10;i++) {
-		// first column entry is Identity
-		working = (Pentagon*)malloc(sizeof(Pentagon));
-		memcpy(working, BaseList[0], sizeof(Pentagon));
-		sprintf(working->pentagon_id, "I");
-		CaleyTable[i][0] = working;
-		
-		// CaleyTable[i][1-4] are the rotations
-		for(j=1;j<5;j++) {
-			working = (Pentagon*)malloc(sizeof(Pentagon));
-			memcpy(working, BaseList[0], sizeof(Pentagon));
+		// Table column indexed by j
+		// CaleyTable[i][0-4] are the rotations
+		for(j=0;j<5;j++) {
+			memcpy(working, BaseList[i], sizeof(Pentagon));
 			rotate(working,j);
 			// find the pentagon in BaseList corresponding to working
-			// May be NULL
 			CaleyTable[i][j] = find_pentagon(BaseList, working);
 		}
-		
-		
-	} //for(i=0;i<10;i++)		
+		// CaleyTable[i][5-9] are the mirror symmetries
+		for(j=5;j<10;j++) {
+			memcpy(working, BaseList[i], sizeof(Pentagon));
+			mirror(working,(j-5));
+			CaleyTable[i][j] = find_pentagon(BaseList, working);
+		}	
+	} //for(i=0;i<10;i++)
+	free(working);
+	
+	for(i=0;i<10;i++) {
+		printf("\nxx  ");
+		for(j=0;j<10;j++) {
+			printf("%s  ", CaleyTable[i][j]->pentagon_id);			
+		}		
+		printf("\n");
+	}
 	return 0;
 }
 
