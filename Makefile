@@ -26,7 +26,7 @@ endif
 DEPS = penta.h
 
 OBJS = searchPenta.o setupPrimeLinkedList.o searchNodesLinkedList.o \
-	utilities.o searchPentagonArray.o
+	utilities.o searchPentagonArray.o searchPentagonLinkedList.o
 
 #----------default target-----------
 
@@ -36,18 +36,5 @@ penta: penta.c $(OBJS) $(DEPS)
 	
 #-----------object files------------
 
-setupPrimeLinkedList.o : setupPrimeLinkedList.c $(DEPS)
-	gcc -c $< $(CFLAGS) $(INC) $(LIB) -o $@
-
-searchPenta.o : searchPenta.c $(DEPS)
-	gcc -c $< $(CFLAGS) $(INC) $(LIB) -o $@
-	
-searchNodesLinkedList.o : searchNodesLinkedList.c $(DEPS)
-	gcc -c $< $(CFLAGS) $(INC) $(LIB) -o $@
-
-utilities.o : utilities.c $(DEPS)
-	gcc -c $< $(CFLAGS) $(INC) $(LIB) -o $@
-	
-searchPentagonArray.o : searchPentagonArray.c $(DEPS)
+%.o : %.c
 	gcc -c $< $(CFLAGS) $(INC) $(LIB) -o $@	
-

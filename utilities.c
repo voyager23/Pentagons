@@ -58,3 +58,21 @@ int diagonalNode4(struct node4 *a, struct node4 *b) {
 }
 //------------------------------------------------------------------//
 
+void printNode4(struct node4 *np) {
+	if(np != NULL) {
+			printf("  node_id = %03d    p0 = %03d  p1 = %03d  p2 = %03d  p3 = %03d\n", 
+				np->node4_id,np->primes[0],np->primes[1],np->primes[2],np->primes[3] );
+		} else {
+			printf("NULL node pointer.\n");
+		}
+}
+
+//------------------------------------------------------------------//
+
+void printRing5_compact(struct ring5 *rp) {
+	int i;
+	for(i=0; i<5; i++) printNode4(rp->nodes[i]);
+	
+	
+}
+//------------------------------------------------------------------//

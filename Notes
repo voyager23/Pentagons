@@ -2,10 +2,41 @@ setupPrimeLinkedList.o : setupPrimeLinkedList.c $(DEPS)
 	gcc -c $< $(CFLAGS) $(INC) $(LIB) -o $@
 
 searchPenta.o : searchPenta.c $(DEPS)
-	gcc -c searchPenta.c $(CFLAGS) $(INC) $(LIB)
+	gcc -c $< $(CFLAGS) $(INC) $(LIB) -o $@
 	
 searchNodesLinkedList.o : searchNodesLinkedList.c $(DEPS)
-	gcc -c searchNodesLinkedList.c $(CFLAGS) $(INC) $(LIB)
+	gcc -c $< $(CFLAGS) $(INC) $(LIB) -o $@
 
 utilities.o : utilities.c $(DEPS)
-	gcc -c utilities.c $(CFLAGS) $(INC) $(LIB)
+	gcc -c $< $(CFLAGS) $(INC) $(LIB) -o $@
+	
+searchPentagonArray.o : searchPentagonArray.c $(DEPS)
+	gcc -c $< $(CFLAGS) $(INC) $(LIB) -o $@	
+
+searchPentagonLinkedList.o : searchPentagonLinkedList.c $(DEPS)
+	gcc -c $< $(CFLAGS) $(INC) $(LIB) -o $@	
+	
+	
+#if()	
+	time_t t1,t2;
+	printf("Array search\n");
+	time(&t1);
+	n_pentagons = searchPentagonArray(&Nodes, &Pentagons, Target);
+	time(&t2);
+	printf("n_pentagons = %d in %.f seconds\n", n_pentagons,difftime(t2,t1));
+	printf("Length of Pentagons list %d\n", g_slist_length(Pentagons));
+#endif	
+
+			
+{	
+	// found a Pentagon
+	newring = malloc(sizeof(struct ring5));
+	newring->nodes[0] = (struct node4*)g_slist_nth_data(*Nodes, a);							
+	newring->nodes[1] = (struct node4*)g_slist_nth_data(*Nodes, b);
+	newring->nodes[2] = (struct node4*)g_slist_nth_data(*Nodes, c);
+	newring->nodes[3] = (struct node4*)g_slist_nth_data(*Nodes, d);
+	newring->nodes[4] = (struct node4*)g_slist_nth_data(*Nodes, e);
+	*Pentagons = g_slist_prepend(*Pentagons, newring);
+	n_pentagons++;
+	printf("%d %d %d %d %d\n",a,b,c,d,e);
+}

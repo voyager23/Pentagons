@@ -31,6 +31,7 @@
 
 #define PRIMES "./Primes.int"
 #define NPTR(gl) ((struct node4 *)((gl)->data))
+#define RPTR(gl) ((struct ring5 *)((gl)->data))
 
 struct node4 {
 	int node4_id;
@@ -46,6 +47,10 @@ void searchPenta(int);
 int setupPrimeLinkedList(GSList **, int);
 int searchNodesLinkedList(GSList **, GSList **, int);
 int searchPentagonArray(GSList **, GSList **, int Target);
+void printNode4(struct node4 *np);
+void printRing5_compact(struct ring5 *rp);
+
+int searchPentagonLinkedList(GSList **, GSList **, int Target);
 
 // -----utilities.c-----
 int adjacentNode4(struct node4 *, struct node4 *);
