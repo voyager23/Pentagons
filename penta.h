@@ -26,12 +26,29 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <time.h>
 #include <glib.h>
 
 #define PRIMES "./Primes.int"
+#define NPTR(gl) ((struct node4 *)((gl)->data))
 
+struct node4 {
+	int node4_id;
+	int primes[4];
+};
+
+struct ring5 {
+	struct node4 *nodes[5];
+};
+
+// -----functions-----
 void searchPenta(int);
 int setupPrimeLinkedList(GSList **, int);
+int searchNodesLinkedList(GSList **, GSList **, int);
+int searchPentagonArray(GSList **, GSList **, int Target);
 
+// -----utilities.c-----
+int adjacentNode4(struct node4 *, struct node4 *);
+int diagonalNode4(struct node4 *, struct node4 *);
 
 #endif

@@ -25,17 +25,29 @@ endif
 
 DEPS = penta.h
 
-OBJS = searchPenta.o setupPrimeLinkedList.o
+OBJS = searchPenta.o setupPrimeLinkedList.o searchNodesLinkedList.o \
+	utilities.o searchPentagonArray.o
 
 #----------default target-----------
 
-penta: $(OBJS) $(DEPS)
-	gcc penta.c $(CFLAGS) $(INC) $(LIB) $(OBJS) -o ./penta	
+penta: penta.c $(OBJS) $(DEPS)
+	gcc $< $(CFLAGS) $(INC) $(LIB) $(OBJS) -o $@
+	mv *.o ./objs
 	
-#-----------object files------------	
+#-----------object files------------
 
 setupPrimeLinkedList.o : setupPrimeLinkedList.c $(DEPS)
-	gcc -c setupPrimeLinkedList.c $(CFLAGS) $(INC) $(LIB)
+	gcc -c $< $(CFLAGS) $(INC) $(LIB) -o $@
 
 searchPenta.o : searchPenta.c $(DEPS)
-	gcc -c searchPenta.c $(CFLAGS) $(INC) $(LIB)
+	gcc -c $< $(CFLAGS) $(INC) $(LIB) -o $@
+	
+searchNodesLinkedList.o : searchNodesLinkedList.c $(DEPS)
+	gcc -c $< $(CFLAGS) $(INC) $(LIB) -o $@
+
+utilities.o : utilities.c $(DEPS)
+	gcc -c $< $(CFLAGS) $(INC) $(LIB) -o $@
+	
+searchPentagonArray.o : searchPentagonArray.c $(DEPS)
+	gcc -c $< $(CFLAGS) $(INC) $(LIB) -o $@	
+

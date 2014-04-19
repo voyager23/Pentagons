@@ -1,0 +1,11 @@
+setupPrimeLinkedList.o : setupPrimeLinkedList.c $(DEPS)
+	gcc -c $< $(CFLAGS) $(INC) $(LIB) -o $@
+
+searchPenta.o : searchPenta.c $(DEPS)
+	gcc -c searchPenta.c $(CFLAGS) $(INC) $(LIB)
+	
+searchNodesLinkedList.o : searchNodesLinkedList.c $(DEPS)
+	gcc -c searchNodesLinkedList.c $(CFLAGS) $(INC) $(LIB)
+
+utilities.o : utilities.c $(DEPS)
+	gcc -c utilities.c $(CFLAGS) $(INC) $(LIB)
