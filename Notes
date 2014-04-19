@@ -15,7 +15,8 @@ searchPentagonArray.o : searchPentagonArray.c $(DEPS)
 
 searchPentagonLinkedList.o : searchPentagonLinkedList.c $(DEPS)
 	gcc -c $< $(CFLAGS) $(INC) $(LIB) -o $@	
-	
+
+//======================================================================
 	
 #if()	
 	time_t t1,t2;
@@ -27,16 +28,40 @@ searchPentagonLinkedList.o : searchPentagonLinkedList.c $(DEPS)
 	printf("Length of Pentagons list %d\n", g_slist_length(Pentagons));
 #endif	
 
-			
-{	
-	// found a Pentagon
-	newring = malloc(sizeof(struct ring5));
-	newring->nodes[0] = (struct node4*)g_slist_nth_data(*Nodes, a);							
-	newring->nodes[1] = (struct node4*)g_slist_nth_data(*Nodes, b);
-	newring->nodes[2] = (struct node4*)g_slist_nth_data(*Nodes, c);
-	newring->nodes[3] = (struct node4*)g_slist_nth_data(*Nodes, d);
-	newring->nodes[4] = (struct node4*)g_slist_nth_data(*Nodes, e);
-	*Pentagons = g_slist_prepend(*Pentagons, newring);
-	n_pentagons++;
-	printf("%d %d %d %d %d\n",a,b,c,d,e);
+//======================================================================
+
+int add_Pentagons_to_list(GSList**Pentagons, struct ring5 *working) {
+	struct ring5 *new_rot, *new_ref;
+	int i;
+	if(find_Pentagon(Pentagons, working) == 0) {
+		// rotations & reflections
+		for(i=0;i<5;i++) {
+			allocate struct ring5 -> new_rot
+			allocate struct ring5 -> new_ref
+			deep copy working -> new_rot
+			deep copy working -> new_ref
+			rotate(new_rot,i)
+			rotate(new_ref,i)
+			append(Pentagons,new_rot)
+			append(Pentagons,new_ref)
+		}
+	}
 }
+
+int find_Pentagon(GSList **Pentagons, struct ring5 working) {
+	// Pentagons are found by matching 5 node_id
+	GSList *target = *Pentagons;
+	int i;
+	while(target != NULL) {
+		found = 1;
+		for(i=0;i<4;i++) {
+			if(working->nodes[i] != RPTR(target)->nodes[i]) {
+				found=0;
+				break;
+			}
+		}
+		if(found==1) break
+		
+	
+}
+

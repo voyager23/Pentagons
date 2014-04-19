@@ -43,5 +43,11 @@ void searchPenta(int Target) {
 	n_pentagons = searchPentagonLinkedList(&Nodes, &Pentagons, Target);
 	printf("Returned %d.\n", n_pentagons);
 	
-	printRing5_compact(RPTR(Pentagons));
+	GSList *pPenta = Pentagons;
+	int i;
+	for(i=0;i<5;i++){
+		printf("--------------------\n");
+		printRing5_compact(RPTR(pPenta));
+		pPenta = pPenta->next;
+	}
 }
