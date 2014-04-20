@@ -28,7 +28,7 @@ int main(int argc, char **argv) {
 	
 	// None threaded version
 	
-	long Target = 82;	
+	long Target = 84;	
 	
 	if(argc==2) {
 		Target = strtol(argv[1],NULL,10);
@@ -37,7 +37,6 @@ int main(int argc, char **argv) {
 	} else {
 		printf("Using default Target %ld.\n",Target);
 	}
-	
 	
 	searchPenta(Target);
 	

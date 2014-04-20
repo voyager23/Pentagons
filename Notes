@@ -49,19 +49,19 @@ int add_Pentagons_to_list(GSList**Pentagons, struct ring5 *working) {
 }
 
 int find_Pentagon(GSList **Pentagons, struct ring5 working) {
-	// Pentagons are found by matching 5 node_id
+	// Pentagons are found by matching 5 pairs of primes p0 & p2
 	GSList *target = *Pentagons;
 	int i;
 	while(target != NULL) {
 		found = 1;
-		for(i=0;i<4;i++) {
-			if(working->nodes[i] != RPTR(target)->nodes[i]) {
+		for(i=0;i<5;i++) {
+			if(	(working->nodes[i]->primes[0] != RPTR(target)->nodes[i]->primes[0])||
+				(working->nodes[i]->primes[2] != RPTR(target)->nodes[i]->primes[2]))
 				found=0;
 				break;
 			}
-		}
-		if(found==1) break
-		
-	
+		if(found==1) return 1;
+	}
+	return 0;
 }
 
