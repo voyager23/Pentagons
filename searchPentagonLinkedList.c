@@ -72,10 +72,13 @@ int find_Pentagon(GSList **Pentagons, struct ring5 *working) {
 		for(i=0;i<5;i++) {
 			if(	(working->nodes[i]->primes[0] != RPTR(target)->nodes[i]->primes[0])||
 				(working->nodes[i]->primes[2] != RPTR(target)->nodes[i]->primes[2]))
+			{
 				found=0;
 				break;
 			}
+		}
 		if(found==1) return 1;
+		target = target->next;
 	}
 	return 0;
 }
@@ -129,7 +132,7 @@ int searchPentagonLinkedList(GSList **Nodes, GSList **Pentagons, int Target) {
 	int i,n_pentagons = 0;
 	int fail;
 	
-	struct ring5 *working = malloc(sizeof(struct ring5));
+	
 	
 	for(a=*Nodes; a != NULL; a = a->next) {		
 		for(b=*Nodes; b != NULL; b = b->next) {
@@ -180,20 +183,27 @@ int searchPentagonLinkedList(GSList **Nodes, GSList **Pentagons, int Target) {
 							(NPTR(e)->primes[2] != NPTR(b)->primes[3])||
 							(NPTR(e)->primes[3] != NPTR(c)->primes[2])) continue;
 						// a-b-c-d-e is a pentagon
-						// found a Pentagon						
+						// found a Pentagon
+						struct ring5 *working = malloc(sizeof(struct ring5));					
 						working->nodes[0] = NPTR(a);							
 						working->nodes[1] = NPTR(b);
 						working->nodes[2] = NPTR(c);
 						working->nodes[3] = NPTR(d);
 						working->nodes[4] = NPTR(e);
+						
+#if(0)						
 						// if this pentagon is already in list - ignore
-						printf("found 5gon\n");
 						if(add_Pentagon_to_list(Pentagons,working) == 0) {
 							printf("Skipped\n");
 						} else {
 							printf("Added 10\n");
 							n_pentagons+=10;							
 						}
+#endif
+
+						*Pentagons = g_slist_prepend(*Pentagons, working);
+						n_pentagons++;
+
 					} // e loop
 				} // d loop
 			} // c loop			
