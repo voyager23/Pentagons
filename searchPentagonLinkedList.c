@@ -23,16 +23,12 @@
 
 #include "./penta.h"
 
-
-
-int searchPentagonLinkedList(GSList **Nodes, GSList **Pentagons, int Target) {
+int searchPentagonLinkedList(GSList **Nodes, GSList **WorkingList, GSList **Pentagons, int Target) {
 
 	GSList *a,*b,*c,*d,*e;
 	int i,n_pentagons = 0;
 	int fail;
-	
-	
-	
+		
 	for(a=*Nodes; a != NULL; a = a->next) {		
 		for(b=*Nodes; b != NULL; b = b->next) {
 			if((b==a)||(NPTR(a)->primes[1] != NPTR(b)->primes[0])) continue;
@@ -90,7 +86,7 @@ int searchPentagonLinkedList(GSList **Nodes, GSList **Pentagons, int Target) {
 						working->nodes[3] = NPTR(d);
 						working->nodes[4] = NPTR(e);
 						// if this pentagon is already in list - ignore
-						if(add_Pentagon_to_list(Pentagons,working) == 1) n_pentagons+=10;							
+						if(add_Pentagon_to_list(Pentagons,WorkingList,working) == 1) n_pentagons+=10;							
 						free(working);
 					} // e loop
 				} // d loop

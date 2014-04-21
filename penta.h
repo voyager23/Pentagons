@@ -49,12 +49,12 @@
 	int searchPentagonArray(GSList **, GSList **, int Target);
 	void printNode4(struct node4 *np);
 	void printRing5_compact(struct ring5 *rp);
-	int searchPentagonLinkedList(GSList **, GSList **, int Target);
+	int searchPentagonLinkedList(GSList **, GSList **, GSList **, int Target);
 
 	// -----utilities.c-----
 	int adjacentNode4(struct node4 *, struct node4 *);
 	int diagonalNode4(struct node4 *, struct node4 *);
-	int add_Pentagon_to_list(GSList**Pentagons, struct ring5 *working);
+	int add_Pentagon_to_list(GSList**Pentagons, GSList **WorkingList, struct ring5 *working);
 	int find_Pentagon(GSList **Pentagons, struct ring5 *working);
 	void rotate(struct ring5 *p,int n);
 	void mirror(struct ring5 *p,int axis);
