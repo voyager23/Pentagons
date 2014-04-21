@@ -76,3 +76,111 @@ void printRing5_compact(struct ring5 *rp) {
 	
 }
 //------------------------------------------------------------------//
+
+
+int add_Pentagon_to_list(GSList**Pentagons, struct ring5 *working) {
+
+	struct ring5 *new_rot, *new_ref;
+	int i;
+	if(find_Pentagon(Pentagons, working) == 0) {
+		printf("\n===================New Configuration===================\n");	
+		printRing5_compact(working);
+		// rotations & reflections
+		for(i=0;i<5;i++) {
+			new_rot = deep_copy_ring5(working);
+			new_ref = deep_copy_ring5(working);
+			rotate(new_rot,i);
+			mirror(new_ref,i);
+			*Pentagons = g_slist_prepend(*Pentagons, new_rot);
+			*Pentagons = g_slist_prepend(*Pentagons, new_ref);
+		}		
+		
+	return 1;	// added to list
+	}
+	return 0;	// not added
+}
+
+//------------------------------------------------------------------//
+
+int find_Pentagon(GSList **Pentagons, struct ring5 *working) {
+	// Pentagons are found by matching 5 pairs of primes p0 & p2
+	GSList *target = *Pentagons;
+	int i,found;
+	while(target != NULL) {
+		found = 1;
+		for(i=0;i<5;i++) {
+			if(	(working->nodes[i]->primes[0] != RPTR(target)->nodes[i]->primes[0])||
+				(working->nodes[i]->primes[2] != RPTR(target)->nodes[i]->primes[2]))
+			{
+				found=0;
+				break;
+			}
+		}
+		if(found==1) return 1;
+		target = target->next;
+	}
+	return 0;
+}
+
+//------------------------------------------------------------------//
+
+void rotate(struct ring5 *p,int n){
+	// 0 <= n <= 4
+	struct node4 *temp = NULL;
+	int i;
+	// Sanity Checks
+	if(p==NULL) {printf("\nrotate: p is NULL pointer.\n");exit(1);}
+	if((n<0)||(n>4)) {printf("rotate: n %d out of bounds.\n",n);exit(1);}
+	while(n>0) {
+		temp = p->nodes[0];
+		for(i=1;i<5;i++) p->nodes[i-1] = p->nodes[i];
+		p->nodes[4] = temp;
+		n--;
+	}
+}
+
+//------------------------------------------------------------------//
+
+void mirror(struct ring5 *p,int axis){	
+	struct node4 *temp = NULL;
+	int i,tmp;
+			
+	// Sanity Checks
+	if(p==NULL) {printf("\nmirror: p is NULL pointer.\n");exit(1);}
+	if((axis<0)||(axis>4)) {printf("mirror: axis %d out of bounds.\n",axis);exit(1);}
+	
+	// swap 'inner pair'
+	temp = p->nodes[ (axis+1)%5 ];
+	p->nodes[ (axis+1)%5 ] = p->nodes[ (axis+4)%5 ];
+	p->nodes[ (axis+4)%5 ] = temp;
+	
+	// swap 'outer pair'
+	temp = p->nodes[ (axis+2)%5 ];
+	p->nodes[ (axis+2)%5 ] = p->nodes[ (axis+3)%5 ];
+	p->nodes[ (axis+3)%5 ] = temp;
+	
+	// for each node swap p0/p1 and p2/p3
+	for(i=0;i<5;i++) {
+		tmp = p->nodes[i]->primes[0];
+		p->nodes[i]->primes[0] = p->nodes[i]->primes[1];	// working corruption?
+		p->nodes[i]->primes[1] = tmp;
+		tmp = p->nodes[i]->primes[2];
+		p->nodes[i]->primes[2] = p->nodes[i]->primes[3];
+		p->nodes[i]->primes[3] = tmp;
+	}		
+}
+
+//------------------------------------------------------------------//
+
+struct ring5* deep_copy_ring5(const struct ring5 *p) {
+	// make a complete independent copy of struct ring5
+	int i,j;
+	struct ring5 *q = (struct ring5*)malloc(sizeof(struct ring5));
+	for(i=0;i<5;i++) {
+		q->nodes[i] = (struct node4*)malloc(sizeof(struct node4));
+		for(j=0;j<4;j++) q->nodes[i]->primes[j] = p->nodes[i]->primes[j];
+	}
+	return q;
+}
+
+//======================================================================

@@ -40,16 +40,6 @@ void searchPenta(int Target) {
 	printf("n_nodes: %d \n", n_nodes);
 	
 	n_pentagons = searchPentagonLinkedList(&Nodes, &Pentagons, Target);
-	printf("Total %d pentagons in list. (Groups of 10)\n", n_pentagons);
-
-#if(0)
-	GSList *pPenta = Pentagons;
-	int i;
-	for(i=0;i<5;i++){
-		printf("--------------------\n");
-		printRing5_compact(RPTR(pPenta));
-		pPenta = pPenta->next;
-	}
-#endif
+	printf("\nTotal %d pentagons in list. (Groups of 10)\n", n_pentagons);
 	
 }

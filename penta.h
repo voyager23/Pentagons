@@ -21,39 +21,43 @@
  * 
  */
 #ifndef __PENTA__
-#define __PENTA__
+	#define __PENTA__
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
-#include <time.h>
-#include <glib.h>
+	#include <stdlib.h>
+	#include <stdio.h>
+	#include <string.h>
+	#include <time.h>
+	#include <glib.h>
 
-#define PRIMES "./Primes.int"
-#define NPTR(gl) ((struct node4 *)((gl)->data))
-#define RPTR(gl) ((struct ring5 *)((gl)->data))
+	#define PRIMES "./Primes.int"
+	#define NPTR(gl) ((struct node4 *)((gl)->data))
+	#define RPTR(gl) ((struct ring5 *)((gl)->data))
 
-struct node4 {
-	int node4_id;
-	int primes[4];
-};
+	struct node4 {
+		int node4_id;
+		int primes[4];
+	};
 
-struct ring5 {
-	struct node4 *nodes[5];
-};
+	struct ring5 {
+		struct node4 *nodes[5];
+	};
 
-// -----functions-----
-void searchPenta(int);
-int setupPrimeLinkedList(GSList **, int);
-int searchNodesLinkedList(GSList **, GSList **, int);
-int searchPentagonArray(GSList **, GSList **, int Target);
-void printNode4(struct node4 *np);
-void printRing5_compact(struct ring5 *rp);
+	// -----functions-----
+	void searchPenta(int);
+	int setupPrimeLinkedList(GSList **, int);
+	int searchNodesLinkedList(GSList **, GSList **, int);
+	int searchPentagonArray(GSList **, GSList **, int Target);
+	void printNode4(struct node4 *np);
+	void printRing5_compact(struct ring5 *rp);
+	int searchPentagonLinkedList(GSList **, GSList **, int Target);
 
-int searchPentagonLinkedList(GSList **, GSList **, int Target);
-
-// -----utilities.c-----
-int adjacentNode4(struct node4 *, struct node4 *);
-int diagonalNode4(struct node4 *, struct node4 *);
+	// -----utilities.c-----
+	int adjacentNode4(struct node4 *, struct node4 *);
+	int diagonalNode4(struct node4 *, struct node4 *);
+	int add_Pentagon_to_list(GSList**Pentagons, struct ring5 *working);
+	int find_Pentagon(GSList **Pentagons, struct ring5 *working);
+	void rotate(struct ring5 *p,int n);
+	void mirror(struct ring5 *p,int axis);
+	struct ring5* deep_copy_ring5(const struct ring5 *p);
 
 #endif
