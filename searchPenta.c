@@ -39,9 +39,8 @@ void searchPenta(int Target) {
 	n_nodes = searchNodesLinkedList(&Primes, &Nodes, Target);
 	printf("n_nodes: %d \n", n_nodes);
 	
-	printf("Starting searchPentagonLinkedList()...");
 	n_pentagons = searchPentagonLinkedList(&Nodes, &Pentagons, Target);
-	printf("Returned %d.\n", n_pentagons);
+	printf("Total %d pentagons in list. (Groups of 10)\n", n_pentagons);
 
 #if(0)
 	GSList *pPenta = Pentagons;

@@ -60,7 +60,7 @@ int diagonalNode4(struct node4 *a, struct node4 *b) {
 
 void printNode4(struct node4 *np) {
 	if(np != NULL) {
-			printf("  node_id = %03d    p0 = %03d  p1 = %03d  p2 = %03d  p3 = %03d\n", 
+			printf("  node_id = %4d  p0 = %4d  p1 = %4d  p2 = %4d  p3 = %4d\n", 
 				np->node4_id,np->primes[0],np->primes[1],np->primes[2],np->primes[3] );
 		} else {
 			printf("NULL node pointer.\n");
