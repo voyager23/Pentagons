@@ -1,3 +1,8 @@
+
+
+https://github.com/voyager23/Pentagons.git
+
+
 setupPrimeLinkedList.o : setupPrimeLinkedList.c $(DEPS)
 	gcc -c $< $(CFLAGS) $(INC) $(LIB) -o $@
 
