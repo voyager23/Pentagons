@@ -30,8 +30,10 @@ void searchPenta(int Target) {
 	GSList *WorkingList = NULL;
 	GSList *Pentagons = NULL;
 	
+	GSList *FourGons = NULL;
 	
-	int n_primes, n_nodes, n_pentagons;
+	
+	int n_primes, n_nodes, n_4gons, n_pentagons;
 	int HiPrime = Target + 2;
 	
 	//printf("Starting setupPrimeLinkedList\n");
@@ -41,21 +43,12 @@ void searchPenta(int Target) {
 	n_nodes = searchNodesLinkedList(&Primes, &Nodes, Target);
 	//printf("n_nodes: %d \n", n_nodes);
 	
-	n_pentagons = searchPentagonLinkedList(&Nodes, &WorkingList, &Pentagons, Target);
-	//printf("n_pentagons: %d\n",n_pentagons);
+	n_4gons = search4gonLinkedList(&Nodes, &FourGons, Target);
 	
-	printf("Target: %3d  n_primes: %3d  n_nodes: %4d  n_unique: %4d\n", Target, n_primes,n_nodes, g_slist_length(WorkingList));
+	printf("search4gon returned %d results. List items %d\n", n_4gons, g_slist_length(FourGons));
+
+	// try to match 4gons to make pentagons
 	
-	//printf("\n%d items in WorkingList\n", g_slist_length(WorkingList));
-
-#if(0)
-	GSList *p = WorkingList;
-	while(p != NULL) {
-		printf("==========\n");
-		printRing5_compact(RPTR(p));
-		p = p->next;
-
-	}
-#endif
+	printf("Matches: %4d\n",match4gons(&FourGons,&Pentagons));
 
 }

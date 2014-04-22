@@ -60,8 +60,8 @@ int diagonalNode4(Node4 *a, Node4 *b) {
 
 void printNode4(Node4 *np) {
 	if(np != NULL) {
-			printf("  p0 = %4d  p1 = %4d  p2 = %4d  p3 = %4d\n", 
-				np->primes[0],np->primes[1],np->primes[2],np->primes[3] );
+			printf("Node_id:%4d  p0 = %4d  p1 = %4d  p2 = %4d  p3 = %4d\n", 
+				np->node4_id, np->primes[0],np->primes[1],np->primes[2],np->primes[3] );
 		} else {
 			printf("NULL node pointer.\n");
 		}
@@ -71,7 +71,7 @@ void printNode4(Node4 *np) {
 
 void printRing5_compact(Ring5 *rp) {
 	int i;
-	for(i=0; i<5; i++) printNode4(rp->nodes[i]);
+	for(i=0; i<5; i++) if(rp->nodes[i] != NULL) printNode4(rp->nodes[i]);
 	
 	
 }

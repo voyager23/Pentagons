@@ -79,7 +79,7 @@ int searchPentagonLinkedList(GSList **Nodes, GSList **WorkingList, GSList **Pent
 							(NPTR(e)->primes[3] != NPTR(c)->primes[2])) continue;
 						// a-b-c-d-e is a pentagon
 						// found a Pentagon
-						struct ring5 *working = malloc(sizeof(struct ring5));					
+						Ring5 *working = malloc(sizeof(Ring5));					
 						working->nodes[0] = NPTR(a);							
 						working->nodes[1] = NPTR(b);
 						working->nodes[2] = NPTR(c);

@@ -41,7 +41,9 @@
 	typedef struct ring5 {
 		Node4 *nodes[5];
 	}Ring5;
+	
 
+	
 	// -----functions-----
 	void searchPenta(int);
 	int setupPrimeLinkedList(GSList **, int);
@@ -59,5 +61,9 @@
 	void rotate(struct ring5 *p,int n);
 	void mirror(struct ring5 *p,int axis);
 	struct ring5* deep_copy_ring5(const struct ring5 *p);
-
+	
+	// -----testcode-----
+	int search4gonLinkedList(GSList **Nodes, GSList ** FourGons, int Target);
+	int match4gons(GSList **FourGons, GSList **Pentagons);
+	
 #endif
