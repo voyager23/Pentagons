@@ -30,30 +30,30 @@
 	#include <glib.h>
 
 	#define PRIMES "./Primes.int"
-	#define NPTR(gl) ((struct node4 *)((gl)->data))
-	#define RPTR(gl) ((struct ring5 *)((gl)->data))
+	#define NPTR(gl) ((Node4 *)((gl)->data))
+	#define RPTR(gl) ((Ring5 *)((gl)->data))
 
-	struct node4 {
+	typedef struct node4 {
 		int node4_id;
 		int primes[4];
-	};
+	}Node4;
 
-	struct ring5 {
-		struct node4 *nodes[5];
-	};
+	typedef struct ring5 {
+		Node4 *nodes[5];
+	}Ring5;
 
 	// -----functions-----
 	void searchPenta(int);
 	int setupPrimeLinkedList(GSList **, int);
 	int searchNodesLinkedList(GSList **, GSList **, int);
 	int searchPentagonArray(GSList **, GSList **, int Target);
-	void printNode4(struct node4 *np);
+	void printNode4(Node4 *np);
 	void printRing5_compact(struct ring5 *rp);
 	int searchPentagonLinkedList(GSList **, GSList **, GSList **, int Target);
 
 	// -----utilities.c-----
-	int adjacentNode4(struct node4 *, struct node4 *);
-	int diagonalNode4(struct node4 *, struct node4 *);
+	int adjacentNode4(Node4 *, Node4 *);
+	int diagonalNode4(Node4 *, Node4 *);
 	int add_Pentagon_to_list(GSList**Pentagons, GSList **WorkingList, struct ring5 *working);
 	int find_Pentagon(GSList **Pentagons, struct ring5 *working);
 	void rotate(struct ring5 *p,int n);
