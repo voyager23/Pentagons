@@ -1,7 +1,7 @@
 /*
  * searchNodesLinkedList.c
  * 
- * Copyright 2014 Michael Tate <mike@wingnut>
+ * Copyright 2014 Michael Tate <michael.tate@wanadoo.fr>
  * 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
