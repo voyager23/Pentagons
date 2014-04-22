@@ -57,7 +57,7 @@ int searchNodesLinkedList(GSList **Primes, GSList **Nodes, int Target) {
 	// Save in Nodes list
 
 	GSList *p0, *p1, *p2, *p3;
-	struct node4 *newnode;
+	Node4 *newnode;
 	int i,j,sum;
 	int found = 0;
 	int buffer[4];
@@ -84,7 +84,7 @@ int searchNodesLinkedList(GSList **Primes, GSList **Nodes, int Target) {
 					if(sum == Target) {											
 						for(i=0; i<24; i++) {
 							// create a Node structure
-							newnode = malloc(sizeof(struct node4));
+							newnode = malloc(sizeof(Node4));
 							for(j=0; j<4; j++) newnode->primes[j] = buffer[ perm[i][j] ];
 							newnode->node4_id = index++;
 							// add permutation to list

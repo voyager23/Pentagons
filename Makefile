@@ -26,7 +26,7 @@ endif
 DEPS = penta.h
 
 OBJS = searchPenta.o setupPrimeLinkedList.o searchNodesLinkedList.o \
-	utilities.o searchPentagonArray.o searchPentagonLinkedList.o
+	utilities.o  searchPentagonLinkedList.o
 
 #----------default target-----------
 

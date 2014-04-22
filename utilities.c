@@ -23,7 +23,7 @@
 
 #include "./penta.h"
 	
-int adjacentNode4(struct node4 *a, struct node4 *b) {
+int adjacentNode4(Node4 *a, Node4 *b) {
 	// The order of the paramters is important.
 	// By convention, node a/p1 => node b/p0.
 	// If the adjacent nodes comply then return 1
@@ -40,7 +40,7 @@ int adjacentNode4(struct node4 *a, struct node4 *b) {
 }
 //------------------------------------------------------------------//
 
-int diagonalNode4(struct node4 *a, struct node4 *b) {
+int diagonalNode4(Node4 *a, Node4 *b) {
 	// The order of the paramters is important.
 	// By convention, node a comes before node b
 	// For diagonal nodes, all prime weights must be unique
@@ -58,7 +58,7 @@ int diagonalNode4(struct node4 *a, struct node4 *b) {
 }
 //------------------------------------------------------------------//
 
-void printNode4(struct node4 *np) {
+void printNode4(Node4 *np) {
 	if(np != NULL) {
 			printf("  p0 = %4d  p1 = %4d  p2 = %4d  p3 = %4d\n", 
 				np->primes[0],np->primes[1],np->primes[2],np->primes[3] );
@@ -69,7 +69,7 @@ void printNode4(struct node4 *np) {
 
 //------------------------------------------------------------------//
 
-void printRing5_compact(struct ring5 *rp) {
+void printRing5_compact(Ring5 *rp) {
 	int i;
 	for(i=0; i<5; i++) printNode4(rp->nodes[i]);
 	
@@ -77,9 +77,9 @@ void printRing5_compact(struct ring5 *rp) {
 }
 //------------------------------------------------------------------//
 
-int add_Pentagon_to_list(GSList**Pentagons, GSList **WorkingList ,struct ring5 *working) {
+int add_Pentagon_to_list(GSList**Pentagons, GSList **WorkingList ,Ring5 *working) {
 
-	struct ring5 *new_rot, *new_ref;
+	Ring5 *new_rot, *new_ref;
 	int i;
 	if(find_Pentagon(Pentagons, working) == 0) {
 		//printf("\n===================New Configuration===================\n");	
@@ -105,7 +105,7 @@ int add_Pentagon_to_list(GSList**Pentagons, GSList **WorkingList ,struct ring5 *
 
 //------------------------------------------------------------------//
 
-int find_Pentagon(GSList **Pentagons, struct ring5 *working) {
+int find_Pentagon(GSList **Pentagons, Ring5 *working) {
 	// Pentagons are found by matching 5 pairs of primes p0 & p2
 	GSList *target = *Pentagons;
 	int i,found;
@@ -127,9 +127,9 @@ int find_Pentagon(GSList **Pentagons, struct ring5 *working) {
 
 //------------------------------------------------------------------//
 
-void rotate(struct ring5 *p,int n){
+void rotate(Ring5 *p,int n){
 	// 0 <= n <= 4
-	struct node4 *temp = NULL;
+	Node4 *temp = NULL;
 	int i;
 	// Sanity Checks
 	if(p==NULL) {printf("\nrotate: p is NULL pointer.\n");exit(1);}
@@ -144,8 +144,8 @@ void rotate(struct ring5 *p,int n){
 
 //------------------------------------------------------------------//
 
-void mirror(struct ring5 *p,int axis){	
-	struct node4 *temp = NULL;
+void mirror(Ring5 *p,int axis){	
+	Node4 *temp = NULL;
 	int i,tmp;
 			
 	// Sanity Checks
@@ -175,12 +175,12 @@ void mirror(struct ring5 *p,int axis){
 
 //------------------------------------------------------------------//
 
-struct ring5* deep_copy_ring5(const struct ring5 *p) {
-	// make a complete independent copy of struct ring5
+Ring5* deep_copy_ring5(const Ring5 *p) {
+	// make a complete independent copy of Ring5
 	int i,j;
-	struct ring5 *q = (struct ring5*)malloc(sizeof(struct ring5));
+	Ring5 *q = (Ring5*)malloc(sizeof(Ring5));
 	for(i=0;i<5;i++) {
-		q->nodes[i] = (struct node4*)malloc(sizeof(struct node4));
+		q->nodes[i] = (Node4*)malloc(sizeof(Node4));
 		for(j=0;j<4;j++) q->nodes[i]->primes[j] = p->nodes[i]->primes[j];
 	}
 	return q;

@@ -104,12 +104,12 @@ int searchPentagonArray(GSList **Nodes, GSList **Pentagons, int Target) {
 							(NodePairs[e_offset + b] == 1)||
 							(NodePairs[e_offset + c] == 1))
 						{	// found a Pentagon
-							newring = malloc(sizeof(struct ring5));
-							newring->nodes[0] = (struct node4*)g_slist_nth_data(*Nodes, a);							
-							newring->nodes[1] = (struct node4*)g_slist_nth_data(*Nodes, b);
-							newring->nodes[2] = (struct node4*)g_slist_nth_data(*Nodes, c);
-							newring->nodes[3] = (struct node4*)g_slist_nth_data(*Nodes, d);
-							newring->nodes[4] = (struct node4*)g_slist_nth_data(*Nodes, e);
+							newring = malloc(sizeof(Ring5));
+							newring->nodes[0] = (Node4*)g_slist_nth_data(*Nodes, a);							
+							newring->nodes[1] = (Node4*)g_slist_nth_data(*Nodes, b);
+							newring->nodes[2] = (Node4*)g_slist_nth_data(*Nodes, c);
+							newring->nodes[3] = (Node4*)g_slist_nth_data(*Nodes, d);
+							newring->nodes[4] = (Node4*)g_slist_nth_data(*Nodes, e);
 							*Pentagons = g_slist_prepend(*Pentagons, newring);
 							n_pentagons++;
 							printf("%d %d %d %d %d\n",a,b,c,d,e);

@@ -27,7 +27,6 @@
 int main(int argc, char **argv) {
 	
 	// None threaded version
-	FILE *fout;
 	
 	long Target = 84;	
 	
