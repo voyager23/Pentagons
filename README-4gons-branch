@@ -1,0 +1,12 @@
+README - 4gons branch
+
+This is the 4gons branch.
+
+Investigate away to construct pentagons according to Stewart's Cube rules.
+
+From the list of Nodes, conduct a 4 way search to find 'open' 4 sided
+figures. Two of these can be overlapped to form a Pentagon.
+
+Preliminary results match - however this seems to be a much slower
+algorithm.
+
