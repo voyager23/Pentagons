@@ -22,6 +22,22 @@
  */
 
 #include "./penta.h"
+
+
+
+void rmdup(int *a, int *n) {
+	int i,j,k;
+	// remove duplicate values from an integer array
+	for(i=0;i<(*n);i++){
+		for(j=i+1;j<(*n);) {
+			if(a[j]==a[i]) {
+				for(k=j;k<(*n);k++) a[k]=a[k+1];
+				*(n)-=1;
+			}
+		else j++;
+	   }
+	}
+}
 	
 int adjacentNode4(Node4 *a, Node4 *b) {
 	// The order of the paramters is important.

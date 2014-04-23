@@ -59,5 +59,6 @@
 	void rotate(struct ring5 *p,int n);
 	void mirror(struct ring5 *p,int axis);
 	struct ring5* deep_copy_ring5(const struct ring5 *p);
-
+	
+	void rmdup(int *a, int *n);
 #endif
