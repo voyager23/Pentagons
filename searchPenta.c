@@ -23,6 +23,12 @@
 
 #include "./penta.h"
 
+int compare (const void * a, const void * b);
+int compare (const void * a, const void * b)
+{
+  return ( *(int*)a - *(int*)b );
+}
+
 void searchPenta(int Target) {
 	
 	GSList *Primes = NULL;
@@ -41,6 +47,29 @@ void searchPenta(int Target) {
 	n_nodes = searchNodesLinkedList(&Primes, &Nodes, Target);
 	//printf("n_nodes: %d \n", n_nodes);
 	
+	// consider adding analysis here -----------------------------------
+	// copy all primes to integer array
+	int i,j;
+	int n = 4*g_slist_length(Nodes);
+	int *a_primes = (int*)malloc(sizeof(int)*n);
+	GSList *gptr = Nodes;
+	j=0;
+	while(gptr != NULL) {
+		for(i=0;i<4;i++) a_primes[j+i] = NPTR(gptr)->primes[i];
+		j += 4;
+		gptr = gptr->next;
+	}
+	
+	// call rmdup on array
+	rmdup(a_primes, &n);
+	// qsort array
+	qsort(a_primes,n,sizeof(int),compare);
+	// print array
+	for(i=0;i<n;i++) printf("%d  ", a_primes[i]);
+	printf("\n");
+	// quit
+	exit(0);
+	//------------------------------------------------------------------
 	n_pentagons = searchPentagonLinkedList(&Nodes, &WorkingList, &Pentagons, Target);
 	//printf("n_pentagons: %d\n",n_pentagons);
 	
