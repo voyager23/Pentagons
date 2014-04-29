@@ -48,7 +48,7 @@ void searchPenta(int Target) {
 	
 	//printf("\n%d items in WorkingList\n", g_slist_length(WorkingList));
 
-#if(0)
+#if(1)
 	GSList *p = WorkingList;
 	while(p != NULL) {
 		printf("==========\n");
