@@ -47,18 +47,20 @@
 	int setupPrimeLinkedList(GSList **, int);
 	int searchNodesLinkedList(GSList **, GSList **, int);
 	int searchPentagonArray(GSList **, GSList **, int Target);
-	void printNode4(Node4 *np);
-	void printRing5_compact(struct ring5 *rp);
+
 	int searchPentagonLinkedList(GSList **, GSList **, GSList **, int Target);
 
 	// -----utilities.c-----
 	int adjacentNode4(Node4 *, Node4 *);
 	int diagonalNode4(Node4 *, Node4 *);
-	int add_Pentagon_to_list(GSList**Pentagons, GSList **WorkingList, struct ring5 *working);
-	int find_Pentagon(GSList **Pentagons, struct ring5 *working);
-	void rotate(struct ring5 *p,int n);
-	void mirror(struct ring5 *p,int axis);
-	struct ring5* deep_copy_ring5(const struct ring5 *p);
+	int add_Pentagon_to_list(GSList**Pentagons, GSList **WorkingList, Ring5 *working);
+	int find_Pentagon(GSList **Pentagons, Ring5 *working);
+	void rotate(Ring5 *p,int n);
+	void mirror(Ring5 *p,int axis);
+	Ring5* deep_copy_ring5(const Ring5 *p);
+	void printNode4(Node4 *np);
+	void printRing5_compact(Ring5 *rp);
+	void file_printRing5(Ring5 *rp);
 	
 	void rmdup(int *a, int *n);
 #endif

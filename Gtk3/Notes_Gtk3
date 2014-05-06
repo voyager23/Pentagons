@@ -1,0 +1,103 @@
+//----------------------------------------------------------------------
+
+void file_prt_struct_tocta(FILE *fout, struct tocta *p, char *option_char) {
+	// version: print to file
+	int i;
+	if(p==NULL) return;
+	if(strcmp(option_char, ">")==0) {
+		fprintf(fout,"\nTarget: %3d  Group: %3d  Ref: %3d\n",p->target,p->group,p->tocta_id);
+		fprintf(fout,"Primes%s ", option_char);
+		for(i=0; i<16; i++) {
+			fprintf(fout,"%d", p->primes[i]);
+			if(i!=15) fprintf(fout,",");
+			if(((i+1)%4)==0) fprintf(fout,"  ");
+		}
+	#if(0)
+		fprintf(fout,"\nId_str: %s\n", p->id_str);
+		// print group_id
+		fprintf(fout,"GrpArray%s ", option_char);
+		for(i=0; i<12; i++) fprintf(fout,"%02d ", p->Group[i]);
+
+	#endif
+		// more new code
+
+		fprintf(fout,"\n");
+		fprintf(fout,"Nodes%s ", option_char);
+		for(i=0; i<6; i++) fprintf(fout,"%03d ", p->nodes[i]);
+		fprintf(fout,"\n");
+	}
+}
+
+//----------------------------------------------------------------------
+
+		// write the detailed data to file
+		char filename[256];
+		sprintf(filename,"./DatFiles/Tocta_%d.dat", t_data[i].target);
+		FILE *fout = fopen(filename,"w");
+		if(fout == NULL) {
+			printf("Could not open %s \n", filename);
+			exit(1);
+		}
+		subGroup = pGroups;
+		while(subGroup != NULL) {
+			subList = subGroup->data;
+			option_char = ">";
+			while(subList != NULL) {
+				new = STPTR(subList);
+				file_prt_struct_tocta(fout,new,option_char);
+				option_char = ":";
+				subList = subList->next;
+			}
+			fprintf(fout,"\n++++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
+			subGroup = subGroup->next;
+		}
+		fclose(fout);
+		// end file write
+		
+//----------------------------------------------------------------------
+
+Using default Target 84.
+Target:  84  n_primes:  24  n_nodes:  936  n_unique:   12
+==========
+  p0 =   31  p1 =   41  p2 =    7  p3 =    5
+  p0 =   41  p1 =   11  p2 =   19  p3 =   13
+  p0 =   11  p1 =   43  p2 =   23  p3 =    7
+  p0 =   43  p1 =   17  p2 =    5  p3 =   19
+  p0 =   17  p1 =   31  p2 =   13  p3 =   23
+==========
+  p0 =   31  p1 =   41  p2 =    5  p3 =    7
+  p0 =   41  p1 =   19  p2 =   11  p3 =   13
+  p0 =   19  p1 =   43  p2 =   17  p3 =    5
+  p0 =   43  p1 =   23  p2 =    7  p3 =   11
+  p0 =   23  p1 =   31  p2 =   13  p3 =   17
+==========
+
+
+Target:  84  n_primes:  24  n_nodes:  936  n_unique:   12
+Primes> 31,41,07,05,41,11,19,13,11,43,23,07,43,17,05,19,17,31,13,23
+Primes> 31,41,05,07,41,19,11,13,19,43,17,05,43,23,07,11,23,31,13,17
+Primes> 07,41,31,05,41,13,19,11,13,17,23,31,17,43,05,19,43,07,11,23
+Primes> 07,41,05,31,41,19,13,11,19,17,43,05,17,23,31,13,23,07,11,43
+Primes> 07,31,41,05,31,13,17,23,13,19,11,41,19,43,05,17,43,07,23,11
+Primes> 07,31,05,41,31,17,13,23,17,19,43,05,19,11,41,13,11,07,23,43
+Primes> 05,41,31,07,41,13,11,19,13,23,17,31,23,43,07,11,43,05,19,17
+Primes> 05,41,07,31,41,11,13,19,11,23,43,07,23,17,31,13,17,05,19,43
+Primes> 05,31,41,07,31,13,23,17,13,11,19,41,11,43,07,23,43,05,17,19
+Primes> 05,31,07,41,31,23,13,17,23,11,43,07,11,19,41,13,19,05,17,43
+Primes> 05,07,41,31,07,11,23,43,11,13,19,41,13,17,31,23,17,05,43,19
+Primes> 05,07,31,41,07,23,11,43,23,13,17,31,13,19,41,11,19,05,43,17
+
+
+#Makefile
+
+p_view: p_view.c p_utils.o p_view.h
+	gcc -g `pkg-config --cflags gtk+-3.0` p_view.c p_utils.o -o p_view `pkg-config --libs gtk+-3.0`
+	
+
+p_utils.o: p_utils.c
+	gcc -g `pkg-config --cflags gtk+-3.0` -c p_utils.c
+	
+#-----------------------------------------------------------------------
+
+scaledpng: scaledpng.c
+	gcc `pkg-config --cflags gtk+-3.0` scaledpng.c -o scaledpng `pkg-config --libs gtk+-3.0`

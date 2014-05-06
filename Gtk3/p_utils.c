@@ -1,7 +1,7 @@
 /*
  * p_utils.c
  * 
- * Copyright 2014 Michael <mike@voyager>
+ * Copyright 2014 Michael <michael.tate@wanadoo.fr>
  * 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,112 +24,85 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "t_view.h"
+#include "p_view.h"
 
 extern const int nDigits;
 extern const int GroupSize;
 
 //----------------------------------------------------------------------
-void draw_tocta(char ** primes_array, int i, struct surface_data *p) {
-
+void draw_penta(char ** primes_array, int i, Surface_Data *p) {
 
   cairo_set_source_rgb(p->cr,0.9, 0.9, 0.9);
   cairo_paint(p->cr);
   
   cairo_set_source_rgb(p->cr, 0.2, 0.4, 0.6 );
   
-  // d->a->b->c
-  cairo_set_line_width(p->cr, 1.0);
-  cairo_move_to(p->cr, node_xy[3][0], node_xy[3][1]);
-  cairo_line_to(p->cr, node_xy[0][0], node_xy[0][1]);
-  cairo_line_to(p->cr, node_xy[1][0], node_xy[1][1]);
-  cairo_stroke(p->cr);
-  // perspective 
+  // a->b->c->d->e->a
   cairo_set_line_width(p->cr, 3.0);
-  cairo_move_to(p->cr, node_xy[1][0], node_xy[1][1]);
+  cairo_move_to(p->cr, node_xy[0][0], node_xy[0][1]);
+  cairo_line_to(p->cr, node_xy[1][0], node_xy[1][1]);
   cairo_line_to(p->cr, node_xy[2][0], node_xy[2][1]);
   cairo_line_to(p->cr, node_xy[3][0], node_xy[3][1]);
-  cairo_stroke(p->cr);
-  
-  // f->a->e->c
-  cairo_set_line_width(p->cr, 1.0);
-  cairo_move_to(p->cr, node_xy[5][0], node_xy[5][1]);
-  cairo_line_to(p->cr, node_xy[0][0], node_xy[0][1]);
   cairo_line_to(p->cr, node_xy[4][0], node_xy[4][1]);
+  cairo_line_to(p->cr, node_xy[0][0], node_xy[0][1]);
   cairo_stroke(p->cr);
-  // perspective
-  cairo_set_line_width(p->cr, 3.0);
-  cairo_move_to(p->cr, node_xy[4][0], node_xy[4][1]);
+  cairo_set_line_width(p->cr, 1.0);
+  cairo_move_to(p->cr, node_xy[0][0], node_xy[0][1]);
   cairo_line_to(p->cr, node_xy[2][0], node_xy[2][1]);
-  cairo_line_to(p->cr, node_xy[5][0], node_xy[5][1]);
-  cairo_stroke(p->cr);
-  
-   // d->e->b-f
-   cairo_set_line_width(p->cr, 3.0);
-  cairo_move_to(p->cr, node_xy[3][0], node_xy[3][1]);
   cairo_line_to(p->cr, node_xy[4][0], node_xy[4][1]);
   cairo_line_to(p->cr, node_xy[1][0], node_xy[1][1]);
-  cairo_line_to(p->cr, node_xy[5][0], node_xy[5][1]);
+  cairo_line_to(p->cr, node_xy[3][0], node_xy[3][1]);
+  cairo_line_to(p->cr, node_xy[3][0], node_xy[3][1]);  
   cairo_close_path(p->cr); 
   cairo_stroke(p->cr);
-  
   cairo_select_font_face(p->cr, "monospace", CAIRO_FONT_SLANT_ITALIC, CAIRO_FONT_WEIGHT_BOLD);
   
   cairo_set_font_size(p->cr,18);
   cairo_set_source_rgb(p->cr, 0.1, 0.1, 0.1 );
   int j;
-  for(j=0;j<12;j++) {
+  for(j=0;j<GroupSize;j++) {
 	  cairo_move_to(p->cr, prime_xy[j][0], prime_xy[j][1]);
 	  cairo_show_text(p->cr, *(primes_array + i*GroupSize + j));
 	  cairo_stroke(p->cr);
   }  	
 }
 //----------------------------------------------------------------------
-char **extract_base_toctas(const char *fname, int *nGroups) {
-	const int nDigits = 16;
-	FILE *fp;
-	char buffer[256];
+char **extract_base_pentas(FILE *fp, int *nUnique) {
+		
 	char **Head = NULL;
 	char **pStr = NULL;
 	char *pToken;
-	int skip,token_idx,i,j;
-	char working[256];
+	char buffer[256];
+	int i,j;
 	
-	*nGroups=0;
-	fp = fopen(fname,"r");
+	// set up and sanity checks
+	*nUnique=0;
 	if(fp==NULL) return;
-	
+	// parse file
 	while(fgets(buffer,255,fp) != NULL) {
 		if(strstr(buffer,"Primes>") == NULL) continue;
-		*nGroups += 1;
-		// ........................
-		Head = (char**)realloc(Head, (*nGroups) * GroupSize * sizeof(char*));
-		pStr = Head + ((*nGroups - 1) * GroupSize);
-		pToken = strtok(buffer," ,");
-		token_idx = 0;
-		skip = 2;
-		while(1){
-			pToken = strtok(NULL," ,");
-			if(pToken == NULL) break;
-			token_idx += 1;
-			if(token_idx == skip) {
-				skip += 4;
-				continue;
+		*nUnique += 1;
+		Head = (char**)realloc(Head, GroupSize*sizeof(char*)*(*nUnique) );
+		pStr = Head + ((*nUnique - 1) * GroupSize);
+		pToken = strtok(buffer," ,");	// capture and discard 'Primes>'
+		
+		for(i=0;i<5;i++) {
+			for(j=0;j<4;j++) {
+				pToken = strtok(NULL," ,");
+				if((j==0)||(j==3)) continue;
+				*pStr = (char*)malloc(sizeof(char)*8);
+				strcpy(*pStr,pToken);
+				pStr += 1;
 			}
-			*pStr = (char*)malloc(sizeof(char)*(nDigits+1));
-			strncpy(*pStr, pToken, nDigits);
-			pStr += 1;
 		}
-		//.........................
 	}
-	fclose(fp);
 	return Head;
 }
 
 //----------------------------------------------------------------------
 static gboolean on_draw_event(GtkWidget *widget, cairo_t *cr, gpointer p)
 {
-  cairo_set_source_surface(cr, ((struct surface_data*)p)->image, 0, 0);
+  cairo_set_source_surface(cr, ((Surface_Data*)p)->image, 0, 0);
   cairo_paint(cr);
   return FALSE;
 }

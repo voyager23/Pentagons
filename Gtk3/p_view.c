@@ -1,7 +1,7 @@
 /*
- * view.c
+ * p_view.c
  * 
- * Copyright 2014 Michael <mike@voyager>
+ * Copyright 2014 Michael <michael.tate@wanadoo.fr>
  * 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,58 +20,52 @@
  * 
  * 
  */
-
-
-
+ 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <cairo.h>
 #include <gtk/gtk.h>
 
-#include "t_view.h"
+#include "p_view.h"
 
-// define width and height of individual tocta images
+// define width and height of individual pentagon images
 const int width=400;
 const int height=400;
 
 // used by print function
-const int GroupSize = 12;
+const int GroupSize = 10;
 
-// scaled x-y co-ords for nodes a->f
+// scaled x-y co-ords for nodes a->e (5)
 const double 
-node_scale[6][2] = {{0.4833,0.4267},	// a
-					{0.9900,0.6267},	// b
-					{0.5633,0.6417},	// c
-					{0.0100,0.3867},	// d
-					{0.6433,0.0067},	// e
-					{0.3900,0.9800}};	// f
+node_scale[5][2] = {{0.500,0.000},	// a
+					{1.000,0.363 },	// b
+					{0.809,0.951 },	// c
+					{0.191,0.951 },	// d
+					{0.000,0.363}};	// e
 							
-// scaled x-y co-ords for primes {a_p0,a_p2,a_p3}->{d_p0,d_p2,d_p3}
+// scaled x-y co-ords for primes
+// first five are the outer primes (nodes)
+// next five are the inner primes (spokes)
 const double
-prime_scale[12][2] = {	{0.2767,0.4000},	// a_p0
-						{0.4800,0.2500},	// a_p2
-						{0.3700,0.7189},	// a_p3
-						
-						{0.7000,0.4966},
-						{0.8400,0.3400},
-						{0.7000,0.8330},
-						
-						{0.7317,0.6195},
-						{0.6200,0.3500},
-						{0.5000,0.8000},
-						
-						{0.3183,0.5084},	// d_p0
-						{0.2200,0.2189},	// d_p2
-						{0.1300,0.7189}};	// d_p3
-						
-struct surface_data *surfaces;			
+prime_scale[10][2] = {	{0.290,0.182},	//a_p1
+						{0.470,0.350},	//a_p2
+						{0.650,0.182},	//b_p1
+						{0.655,0.476},	//b_p2
+						{0.850,0.657},	//c_p1
+						{0.610,0.690},	//c_p2		
+						{0.500,0.951},	//d_p1
+						{0.330,0.690},	//d_p2
+						{0.095,0.657},	//e_p1
+						{0.290,0.476}};	//e_p2
+
+Surface_Data *surfaces;			
 
 double
-node_xy[6][2];		// scaled co-ordinates for nodes a->f
+node_xy[5][2];		// scaled co-ordinates for nodes a->f
 
 double
-prime_xy[12][2];	// scaled co-ordinates for prime values
+prime_xy[10][2];	// scaled co-ordinates for prime values
 
 // ==================== Main Code =======================
 
@@ -80,7 +74,7 @@ int main(int argc, char **argv)
 
 	int i;
 	
-	int nGroups;
+	int nUnique=0;
 	char **primes_array;
 	char **pStr;
 	int j,k;
@@ -89,7 +83,7 @@ int main(int argc, char **argv)
 	char title[256];
 	
 	// look for .dat files in Parent Directory
-	sprintf(filename,"../DatFiles/Tocta_%s.dat", argv[1]);
+	sprintf(filename,"../DatFiles/Penta_%s.dat", argv[1]);
 	printf("Looking for %s ... ", filename);
 	fp = fopen(filename,"r");
 	if(fp != NULL) {
@@ -99,29 +93,34 @@ int main(int argc, char **argv)
 		exit(1);
 	}
 	
-	fclose(fp);
-	
-	primes_array = extract_base_toctas(filename, &nGroups);
-	sprintf(title,"- Showing %d Base Toctas for Target %s -", nGroups, argv[1]);
-	printf("nGroups = %d\n", nGroups);
+	primes_array = extract_base_pentas(fp, &nUnique);
+	if(nUnique < 1) {
+		printf("No pentagons found for target value %s.\n", argv[1]);
+		fclose(fp);
+		return 0;
+	}
+	sprintf(title,"- Showing %d Base Pentas for Target %s -", nUnique, argv[1]);
 	
 #if(0)	
 	pStr = primes_array;
-	for(j=0; j<nGroups; j++) {
+	for(j=0; j<nUnique; j++) {
 		for(i=0; i<GroupSize; i++) printf("%s,", *(pStr + j*GroupSize + i));
 		printf("\n");
 	}
 #endif
+	fclose(fp);
+
+	
 //----------------------------------------------------------------------	
 		
 	// Calculate the node co-ordinates
-	for(i=0;i<6;i++) {
+	for(i=0;i<5;i++) {
 		node_xy[i][0] = width * node_scale[i][0];
 		node_xy[i][1] = height * node_scale[i][1];
 	}
 	
 	// Calculate the number co-ordinates
-	for(i=0;i<12;i++) {
+	for(i=0;i<10;i++) {
 		prime_xy[i][0] = width * prime_scale[i][0];
 		prime_xy[i][1] = height * prime_scale[i][1];
 	}
@@ -129,7 +128,7 @@ int main(int argc, char **argv)
 	// Create the surfaces
 	
 	const int nCols = 4;
-	const int nRows = (nGroups-1)/nCols + 1;
+	const int nRows = (nUnique-1)/nCols + 1;
 	GtkWidget *window, *scrolled, *grid;
 	GdkPixbuf *pixbuf;
 	
@@ -141,13 +140,13 @@ int main(int argc, char **argv)
 	gtk_grid_set_column_spacing(GTK_GRID(grid),5);
 	
 	// allocate space for surfaces array
-	surfaces = (struct surface_data*)malloc(sizeof(struct surface_data) * nGroups);
+	surfaces = (Surface_Data*)malloc(sizeof(Surface_Data) * nUnique);
 	
-	for(i=0; i<nGroups; i++) {
+	for(i=0; i<nUnique; i++) {
 		surfaces[i].image = cairo_image_surface_create(CAIRO_FORMAT_ARGB32, width, height);
 		surfaces[i].cr = cairo_create(surfaces[i].image);
 		
-		draw_tocta(primes_array, i, &surfaces[i]);
+		draw_penta(primes_array, i, &surfaces[i]);
 		
 		pixbuf = gdk_pixbuf_get_from_surface( surfaces[i].image, 0, 0, width, height);
 		surfaces[i].tocta_image = gtk_image_new_from_pixbuf(pixbuf);

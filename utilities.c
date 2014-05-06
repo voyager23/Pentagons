@@ -23,8 +23,12 @@
 
 #include "./penta.h"
 
+//----------------------------------------------------------------------
+void file_printRing5(Ring5 *rp) {
+	
+}
 
-
+//----------------------------------------------------------------------
 void rmdup(int *a, int *n) {
 	int i,j,k;
 	// remove duplicate values from an integer array
@@ -38,7 +42,7 @@ void rmdup(int *a, int *n) {
 	   }
 	}
 }
-	
+//----------------------------------------------------------------------
 int adjacentNode4(Node4 *a, Node4 *b) {
 	// The order of the paramters is important.
 	// By convention, node a/p1 => node b/p0.
@@ -93,7 +97,7 @@ void printRing5_compact(Ring5 *rp) {
 }
 //------------------------------------------------------------------//
 
-int add_Pentagon_to_list(GSList**Pentagons, GSList **WorkingList ,Ring5 *working) {
+int add_Pentagon_to_list(GSList**Pentagons, GSList **BasePentas ,Ring5 *working) {
 
 	Ring5 *new_rot, *new_ref;
 	int i;
@@ -102,7 +106,7 @@ int add_Pentagon_to_list(GSList**Pentagons, GSList **WorkingList ,Ring5 *working
 		//printRing5_compact(working);
 		
 		// TODO: add deep copy of working to FinalList
-		*WorkingList = g_slist_prepend(*WorkingList, deep_copy_ring5(working));
+		*BasePentas = g_slist_prepend(*BasePentas, deep_copy_ring5(working));
 		
 		// all rotations & reflections go to Pentagons
 		for(i=0;i<5;i++) {
