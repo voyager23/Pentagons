@@ -30,41 +30,46 @@ extern const int nDigits;
 extern const int GroupSize;
 
 //----------------------------------------------------------------------
+void file_penta(FILE *fp,int i, Surface_Data *p){
+}
+//----------------------------------------------------------------------
 void draw_penta(char ** primes_array, int i, Surface_Data *p) {
+	
+	Surface_Data *q = (p+i);
 
-  cairo_set_source_rgb(p->cr,0.9, 0.9, 0.9);
-  cairo_paint(p->cr);
-  
-  cairo_set_source_rgb(p->cr, 0.2, 0.4, 0.6 );
-  
-  // a->b->c->d->e->a
-  cairo_set_line_width(p->cr, 3.0);
-  cairo_move_to(p->cr, node_xy[0][0], node_xy[0][1]);
-  cairo_line_to(p->cr, node_xy[1][0], node_xy[1][1]);
-  cairo_line_to(p->cr, node_xy[2][0], node_xy[2][1]);
-  cairo_line_to(p->cr, node_xy[3][0], node_xy[3][1]);
-  cairo_line_to(p->cr, node_xy[4][0], node_xy[4][1]);
-  cairo_line_to(p->cr, node_xy[0][0], node_xy[0][1]);
-  cairo_stroke(p->cr);
-  cairo_set_line_width(p->cr, 1.0);
-  cairo_move_to(p->cr, node_xy[0][0], node_xy[0][1]);
-  cairo_line_to(p->cr, node_xy[2][0], node_xy[2][1]);
-  cairo_line_to(p->cr, node_xy[4][0], node_xy[4][1]);
-  cairo_line_to(p->cr, node_xy[1][0], node_xy[1][1]);
-  cairo_line_to(p->cr, node_xy[3][0], node_xy[3][1]);
-  cairo_line_to(p->cr, node_xy[3][0], node_xy[3][1]);  
-  cairo_close_path(p->cr); 
-  cairo_stroke(p->cr);
-  cairo_select_font_face(p->cr, "monospace", CAIRO_FONT_SLANT_ITALIC, CAIRO_FONT_WEIGHT_BOLD);
-  
-  cairo_set_font_size(p->cr,18);
-  cairo_set_source_rgb(p->cr, 0.1, 0.1, 0.1 );
-  int j;
-  for(j=0;j<GroupSize;j++) {
-	  cairo_move_to(p->cr, prime_xy[j][0], prime_xy[j][1]);
-	  cairo_show_text(p->cr, *(primes_array + i*GroupSize + j));
-	  cairo_stroke(p->cr);
-  }  	
+	cairo_set_source_rgb(q->cr,0.9, 0.9, 0.9);
+	cairo_paint(q->cr);
+	  
+	cairo_set_source_rgb(q->cr, 0.2, 0.4, 0.6 );
+	  
+	// a->b->c->d->e->a
+	cairo_set_line_width(q->cr, 3.0);
+	cairo_move_to(q->cr, node_xy[0][0], node_xy[0][1]);
+	cairo_line_to(q->cr, node_xy[1][0], node_xy[1][1]);
+	cairo_line_to(q->cr, node_xy[2][0], node_xy[2][1]);
+	cairo_line_to(q->cr, node_xy[3][0], node_xy[3][1]);
+	cairo_line_to(q->cr, node_xy[4][0], node_xy[4][1]);
+	cairo_line_to(q->cr, node_xy[0][0], node_xy[0][1]);
+	cairo_stroke(q->cr);
+	cairo_set_line_width(q->cr, 1.0);
+	cairo_move_to(q->cr, node_xy[0][0], node_xy[0][1]);
+	cairo_line_to(q->cr, node_xy[2][0], node_xy[2][1]);
+	cairo_line_to(q->cr, node_xy[4][0], node_xy[4][1]);
+	cairo_line_to(q->cr, node_xy[1][0], node_xy[1][1]);
+	cairo_line_to(q->cr, node_xy[3][0], node_xy[3][1]);
+	cairo_line_to(q->cr, node_xy[3][0], node_xy[3][1]);  
+	cairo_close_path(q->cr); 
+	cairo_stroke(q->cr);
+	cairo_select_font_face(q->cr, "monospace", CAIRO_FONT_SLANT_ITALIC, CAIRO_FONT_WEIGHT_BOLD);
+	  
+	cairo_set_font_size(q->cr,18);
+	cairo_set_source_rgb(q->cr, 0.1, 0.1, 0.1 );
+	int j;
+	for(j=0;j<GroupSize;j++) {
+		cairo_move_to(q->cr, prime_xy[j][0], prime_xy[j][1]);
+		cairo_show_text(q->cr, *(primes_array + i*GroupSize + j));
+		cairo_stroke(q->cr);
+	}  	
 }
 //----------------------------------------------------------------------
 char **extract_base_pentas(FILE *fp, int *nUnique) {
