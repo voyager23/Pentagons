@@ -32,6 +32,7 @@
 // define width and height of individual pentagon images
 const int width=400;
 const int height=400;
+const double scale_factor = 0.90;
 
 // used by print function
 const int GroupSize = 10;
@@ -71,9 +72,7 @@ prime_xy[10][2];	// scaled co-ordinates for prime values
 
 int main(int argc, char **argv)
 {
-
 	int i;
-	
 	int nUnique=0;
 	char **primes_array;
 	char **pStr;
@@ -81,9 +80,10 @@ int main(int argc, char **argv)
 	FILE *fp;
 	char filename[256];
 	char title[256];
+	int Target = atoi(argv[1]);
 	
 	// look for .dat files in Parent Directory
-	sprintf(filename,"../DatFiles/Penta_%s.dat", argv[1]);
+	sprintf(filename,"../DatFiles/Penta_%d.dat", Target);
 	printf("Looking for %s ... ", filename);
 	fp = fopen(filename,"r");
 	if(fp != NULL) {
@@ -95,11 +95,11 @@ int main(int argc, char **argv)
 	
 	primes_array = extract_base_pentas(fp, &nUnique);
 	if(nUnique < 1) {
-		printf("No pentagons found for target value %s.\n", argv[1]);
+		printf("No pentagons found for target value %d.\n", Target);
 		fclose(fp);
 		return 0;
 	}
-	sprintf(title,"- Showing %d Base Pentas for Target %s -", nUnique, argv[1]);
+	sprintf(title,"- Showing %d Base Pentas for Target %d -", nUnique, Target);
 	
 #if(0)	
 	pStr = primes_array;
@@ -115,14 +115,35 @@ int main(int argc, char **argv)
 		
 	// Calculate the node co-ordinates
 	for(i=0;i<5;i++) {
-		node_xy[i][0] = width * node_scale[i][0];
-		node_xy[i][1] = height * node_scale[i][1];
+		
+		node_xy[i][0] = node_scale[i][0] - 0.50;
+		node_xy[i][0] *= scale_factor;
+		node_xy[i][0] += 0.50;
+		node_xy[i][0] *= width;
+		
+		node_xy[i][1] = node_scale[i][1] - 0.50;
+		node_xy[i][1] *= scale_factor;
+		node_xy[i][1] += 0.50;
+		node_xy[i][1] *= height;
+		
+		//node_xy[i][0] = width * node_scale[i][0];
+		//node_xy[i][1] = height * node_scale[i][1];
 	}
 	
 	// Calculate the number co-ordinates
 	for(i=0;i<10;i++) {
-		prime_xy[i][0] = width * prime_scale[i][0];
-		prime_xy[i][1] = height * prime_scale[i][1];
+		prime_xy[i][0] = prime_scale[i][0] - 0.50;
+		prime_xy[i][0] *= scale_factor;
+		prime_xy[i][0] += 0.50;
+		prime_xy[i][0] *= width;
+		
+		prime_xy[i][1] = prime_scale[i][1] - 0.50;
+		prime_xy[i][1] *= scale_factor;
+		prime_xy[i][1] += 0.50;
+		prime_xy[i][1] *= height;
+		
+		//prime_xy[i][0] = width * prime_scale[i][0];
+		//prime_xy[i][1] = height * prime_scale[i][1];
 	}
 	
 	// Create the surfaces
@@ -150,7 +171,7 @@ int main(int argc, char **argv)
 		surfaces[i].penta_image = gtk_image_new_from_pixbuf(pixbuf);
 		gtk_grid_attach(GTK_GRID(grid), surfaces[i].penta_image, (i%nCols), (i/nCols), 1, 1);
 		// new code
-		file_penta(84,nUnique,surfaces,i);		
+		file_penta(Target,nUnique,surfaces,i);		
 	}
 	
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled),GTK_POLICY_ALWAYS,GTK_POLICY_ALWAYS);
