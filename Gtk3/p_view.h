@@ -22,7 +22,7 @@ typedef struct surface_data {
 }Surface_Data;
  
 void draw_penta(char **, int i, Surface_Data *p);
-void file_penta(FILE *fp,int i, Surface_Data *p);
+void file_penta(int Target, int nUnique, Surface_Data *p, int i);
 static gboolean on_draw_event(GtkWidget *widget, cairo_t *cr, gpointer user_data);
 char **extract_base_pentas(FILE *fp, int *nUnique);
 

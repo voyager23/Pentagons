@@ -30,7 +30,13 @@ extern const int nDigits;
 extern const int GroupSize;
 
 //----------------------------------------------------------------------
-void file_penta(FILE *fp,int i, Surface_Data *p){
+void file_penta(int Target, int nUnique, Surface_Data *p, int i){
+	
+	char fname[128];	
+	sprintf(fname,".//PngFiles//Penta_%d_%d_%d.png",Target,nUnique,i);
+	// more code
+	cairo_surface_write_to_png( (p+i)->image, fname);
+	// end
 }
 //----------------------------------------------------------------------
 void draw_penta(char ** primes_array, int i, Surface_Data *p) {

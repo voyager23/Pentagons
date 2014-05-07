@@ -144,16 +144,13 @@ int main(int argc, char **argv)
 	
 	for(i=0; i<nUnique; i++) {
 		surfaces[i].image = cairo_image_surface_create(CAIRO_FORMAT_ARGB32, width, height);
-		surfaces[i].cr = cairo_create(surfaces[i].image);
-		
-		draw_penta(primes_array, i, surfaces);
-		// add code to write surface as .png file Penta_Target_nUnique_(i+1).png
-		
+		surfaces[i].cr = cairo_create(surfaces[i].image);		
+		draw_penta(primes_array, i, surfaces);		
 		pixbuf = gdk_pixbuf_get_from_surface( surfaces[i].image, 0, 0, width, height);
 		surfaces[i].penta_image = gtk_image_new_from_pixbuf(pixbuf);
-		
 		gtk_grid_attach(GTK_GRID(grid), surfaces[i].penta_image, (i%nCols), (i/nCols), 1, 1);
-		
+		// new code
+		file_penta(84,nUnique,surfaces,i);		
 	}
 	
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled),GTK_POLICY_ALWAYS,GTK_POLICY_ALWAYS);
