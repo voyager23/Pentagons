@@ -102,10 +102,7 @@ int add_Pentagon_to_list(GSList**Pentagons, GSList **BasePentas ,Ring5 *working)
 	Ring5 *new_rot, *new_ref;
 	int i;
 	if(find_Pentagon(Pentagons, working) == 0) {
-		//printf("\n===================New Configuration===================\n");	
-		//printRing5_compact(working);
 		
-		// TODO: add deep copy of working to FinalList
 		*BasePentas = g_slist_prepend(*BasePentas, deep_copy_ring5(working));
 		
 		// all rotations & reflections go to Pentagons
@@ -185,7 +182,7 @@ void mirror(Ring5 *p,int axis){
 	// for each node swap p0/p1 and p2/p3
 	for(i=0;i<5;i++) {
 		tmp = p->nodes[i]->primes[0];
-		p->nodes[i]->primes[0] = p->nodes[i]->primes[1];	// working corruption?
+		p->nodes[i]->primes[0] = p->nodes[i]->primes[1];
 		p->nodes[i]->primes[1] = tmp;
 		tmp = p->nodes[i]->primes[2];
 		p->nodes[i]->primes[2] = p->nodes[i]->primes[3];

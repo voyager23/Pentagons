@@ -23,10 +23,13 @@ endif
 
 # ----------------------------------
 
-DEPS = penta.h
+DEPS =	penta.h
 
-OBJS = searchPenta.o setupPrimeLinkedList.o searchNodesLinkedList.o \
-	utilities.o searchPentagonLinkedList.o
+OBJS =	searchPenta.o \
+		setupPrimeLinkedList.o \
+		searchNodesLinkedList.o \
+		searchPentagonLinkedList.o \
+		utilities.o
 
 #----------default target-----------
 

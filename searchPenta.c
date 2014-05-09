@@ -32,21 +32,17 @@ void searchPenta(int Target) {
 	FILE *fp;
 	char filename[128];
 	int n,pr;
-	int n_primes, n_nodes, n_pentagons;
+	int n_primes, n_nodes;
 	int HiPrime = Target + 2;
 	
 	n_primes = setupPrimeLinkedList(&Primes, HiPrime);
-	//printf("n_primes: %d \n", n_primes);
 	
 	n_nodes = searchNodesLinkedList(&Primes, &Nodes, Target);
-	//printf("n_nodes: %d \n", n_nodes);
 	
-	n_pentagons = searchPentagonLinkedList(&Nodes, &BasePentas, &Pentagons, Target);
-	//printf("n_pentagons: %d\n",n_pentagons);
+	(void)searchPentagonLinkedList(&Nodes, &BasePentas, &Pentagons, Target);
 	
 	printf("Target: %3d  n_primes: %3d  n_nodes: %4d  n_unique: %4d\n", Target, n_primes,n_nodes, g_slist_length(BasePentas));
 	
-#if(1)
 	// write data to file for use by graphics
 	sprintf(filename,"./DatFiles/Penta_%02d.dat",Target);
 	fp = fopen(filename,"w");
@@ -69,5 +65,4 @@ void searchPenta(int Target) {
 		p = p->next;
 	}
 	fclose(fp);
-#endif
 }
