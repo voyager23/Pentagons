@@ -28,6 +28,7 @@
 	#include <string.h>
 	#include <time.h>
 	#include <glib.h>
+	#include <pthread.h>
 
 	#define PRIMES "./Primes.int"
 	#define NPTR(gl) ((Node4 *)((gl)->data))

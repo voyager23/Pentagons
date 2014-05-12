@@ -21,6 +21,9 @@ else
 	RPATH = 
 endif
 
+# Add the flag for Posix Threads - mjt 12May2014
+CFLAGS += -pthread
+
 # ----------------------------------
 
 DEPS =	penta.h
