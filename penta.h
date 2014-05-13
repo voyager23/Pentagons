@@ -48,8 +48,9 @@
 	int setupPrimeLinkedList(GSList **, int);
 	int searchNodesLinkedList(GSList **, GSList **, int);
 	int searchPentagonArray(GSList **, GSList **, int Target);
-
 	int searchPentagonLinkedList(GSList **, GSList **, GSList **, int Target);
+	// new function
+	int searchPentagonLinkedList_threads(GSList **Nodes, GSList **BasePentas, GSList **Pentagons, int Target);
 
 	// -----utilities.c-----
 	int adjacentNode4(Node4 *, Node4 *);

@@ -32,7 +32,8 @@ OBJS =	searchPenta.o \
 		setupPrimeLinkedList.o \
 		searchNodesLinkedList.o \
 		searchPentagonLinkedList.o \
-		utilities.o
+		utilities.o \
+		searchPentagonLinkedList_threads.o
 
 #----------default target-----------
 

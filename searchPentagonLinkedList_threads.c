@@ -28,26 +28,35 @@
 
 typedef struct thread_data {
 	pthread_t thread_id;
+	int offset_e;
 	GSList **nodes;			// read only
 	GSList **basepentas;	// read-write
 	GSList **pentagons;		// read-write
 	GSList *a,*b,*c,*d,*e;	// read only
+	int found;
 } ThreadData;
 
-int searchPentagonLinkedList(GSList **Nodes, GSList **BasePentas, GSList **Pentagons, int Target) {
+void* worker_e(void *);
+void* worker_e(void *p) {	
+	return NULL;
+}
+
+int searchPentagonLinkedList_threads(GSList **Nodes, GSList **BasePentas, GSList **Pentagons, int Target) {
 
 	GSList *a,*b,*c,*d,*e;
 	int i,n_pentagons = 0;
 	int fail;
 	
-	int idx;
+	int t;
 	ThreadData tdb[NTHREADS];
-	ThreadData *p_tdb = tbd;
+	ThreadData *p_tdb = tdb;
 	// initialise some values
-	p_tbp->nodes = Nodes;			// RO
-	p_tbp->basepentas = BasePentas;	// Protect with mutex - RW
-	p_tbp->pentagons = Pentagons;	// Protect with mutex - RW
-		
+	for(t=0;t<NTHREADS;t++) {
+		tdb[t].nodes = Nodes;				// RO
+		tdb[t].basepentas = BasePentas;	// Protect with mutex - RW
+		tdb[t].pentagons = Pentagons;		// Protect with mutex - RW
+	}
+	
 	for(a=*Nodes; a != NULL; a = a->next) {		
 		for(b=*Nodes; b != NULL; b = b->next) {
 			if((b==a)||(NPTR(a)->primes[1] != NPTR(b)->primes[0])) continue;
@@ -90,17 +99,21 @@ int searchPentagonLinkedList(GSList **Nodes, GSList **BasePentas, GSList **Penta
 						(NPTR(d)->primes[1] == NPTR(b)->primes[3])||
 						(NPTR(d)->primes[1] == NPTR(c)->primes[2])) continue;
 					// at this level set up the thread-data-block
-					tdb[]->a = a;
-					tdb[]->b = b;
-					tdb[]->c = c;
-					tdb[]->d = d;
+					for(t=0; t<NTHREADS; t++) {
+						tdb[t].a = a;
+						tdb[t].b = b;
+						tdb[t].c = c;
+						tdb[t].d = d;
+					}
 					// 
 					for(e=*Nodes; e != NULL; e = e->next) {
 						//
-						int t;
 						for(t=0; t<NTHREADS; t++) {
-						tbd->e = e;
-						pthread_create( &(tbd[1]->thread_id), NULL, myfunct, p_tbd);
+							tdb[t].e = g_slist_nth(e,t);
+							tdb[t].found=0;
+							tdb[t].offset_e=t;
+							pthread_create( &(tdb[t].thread_id), NULL, worker_e, p_tdb);
+						}
 						
 						if((e==d)||(e==c)||(e==b)||(e==a)) continue;
 						if(	// testing for link values
