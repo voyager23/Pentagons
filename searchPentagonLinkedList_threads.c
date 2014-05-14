@@ -28,12 +28,11 @@
 
 typedef struct thread_data {
 	pthread_t thread_id;
-	int offset_e;
+	int found;
+	GSList *a,*b,*c,*d,*e;	// read only
 	GSList **nodes;			// read only
 	GSList **basepentas;	// read-write
 	GSList **pentagons;		// read-write
-	GSList *a,*b,*c,*d,*e;	// read only
-	int found;
 } ThreadData;
 
 void* worker_e(void *);
@@ -48,14 +47,9 @@ int searchPentagonLinkedList_threads(GSList **Nodes, GSList **BasePentas, GSList
 	int fail;
 	
 	int t;
-	ThreadData tdb[NTHREADS];
-	ThreadData *p_tdb = tdb;
-	// initialise some values
-	for(t=0;t<NTHREADS;t++) {
-		tdb[t].nodes = Nodes;				// RO
-		tdb[t].basepentas = BasePentas;	// Protect with mutex - RW
-		tdb[t].pentagons = Pentagons;		// Protect with mutex - RW
-	}
+	ThreadData *Head_tdb, *p_tdb;
+	
+	Head_tdb = (ThreadData*)malloc(sizeof(ThreadData)*g_slist_length(*Nodes));
 	
 	for(a=*Nodes; a != NULL; a = a->next) {		
 		for(b=*Nodes; b != NULL; b = b->next) {
@@ -98,41 +92,32 @@ int searchPentagonLinkedList_threads(GSList **Nodes, GSList **BasePentas, GSList
 						(NPTR(d)->primes[1] == NPTR(b)->primes[1])||
 						(NPTR(d)->primes[1] == NPTR(b)->primes[3])||
 						(NPTR(d)->primes[1] == NPTR(c)->primes[2])) continue;
-					// at this level set up the thread-data-block
-					for(t=0; t<NTHREADS; t++) {
-						tdb[t].a = a;
-						tdb[t].b = b;
-						tdb[t].c = c;
-						tdb[t].d = d;
-					}
-					// 
-					for(e=*Nodes; e != NULL; e = e->next) {
-						//
-						for(t=0; t<NTHREADS; t++) {
-							tdb[t].e = g_slist_nth(e,t);
-							tdb[t].found=0;
-							tdb[t].offset_e=t;
-							pthread_create( &(tdb[t].thread_id), NULL, worker_e, p_tdb);
+					//==================================================
+					e = *Nodes;
+					p_tdb = Head_tdb;
+					while(e != NULL) {
+						// launch threads in blocks of NTHREADS
+						count = 0;
+						while(count < NTHREADS) {
+							p_tdb->a = a;
+							p_tdb->b = b;
+							p_tdb->c = c;
+							p_tdb->d = d;
+							p_tdb->e = e;
+							pthread_create(&(p_tdb->thread_id), NULL, worker_e, p_tdb);
+							e = e->next;
+							if(e == NULL) break;
+							p_tdb += 1;
+							count++;
 						}
+						// recover threads in blocks of NTHREADS
 						
-						if((e==d)||(e==c)||(e==b)||(e==a)) continue;
-						if(	// testing for link values
-							(NPTR(e)->primes[0] != NPTR(d)->primes[1])||
-							(NPTR(e)->primes[1] != NPTR(a)->primes[0])||
-							(NPTR(e)->primes[2] != NPTR(b)->primes[3])||
-							(NPTR(e)->primes[3] != NPTR(c)->primes[2])) continue;
-						// a-b-c-d-e is a pentagon
-						// found a Pentagon
-						struct ring5 *working = malloc(sizeof(struct ring5));					
-						working->nodes[0] = NPTR(a);							
-						working->nodes[1] = NPTR(b);
-						working->nodes[2] = NPTR(c);
-						working->nodes[3] = NPTR(d);
-						working->nodes[4] = NPTR(e);
-						// if this pentagon is already in list - ignore
-						if(add_Pentagon_to_list(Pentagons,BasePentas,working) == 1) n_pentagons+=10;							
-						free(working);
-					} // e loop
+						p_tdb -= NTHREADS;
+						while(count < NTHREADS) {
+							pthread_join(p_tdb->thread_id, NULL)
+					
+					//==================================================
+					
 				} // d loop
 			} // c loop			
 		} // b loop
