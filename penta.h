@@ -51,6 +51,7 @@
 	int searchPentagonLinkedList(GSList **, GSList **, GSList **, int Target);
 	// new function
 	int searchPentagonLinkedList_threads(GSList **Nodes, GSList **BasePentas, GSList **Pentagons, int Target);
+	int searchPentagon_thread(GSList **Nodes, GSList **BasePentas, GSList **Pentagons, int Target);
 
 	// -----utilities.c-----
 	int adjacentNode4(Node4 *, Node4 *);
