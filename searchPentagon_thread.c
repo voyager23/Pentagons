@@ -31,20 +31,86 @@
 typedef struct thread_data {
 	int index,block_count,found;
 	GSList *a,*b,*c,*d,*e;	// thread-local pointers into Nodes list
-	GSList **nodes;			// Head of Nodes
-	GSList **basepentas;	// thread-local list of unique pentas
-	GSList **pentagons;		// thread-local list of all pentas
+	GSList *Nodes;			// pointer to head of Nodes list - read_only
+	GSList *basepentas;		// thread-local list of unique pentas
+	GSList *pentagons;		// thread-local list of all pentas
 } ThreadData;
 
 void* worker(void *);
 //----------------------------------------------------------------------
 void* worker(void *p) {
+	// On entry, p points to thread data block which is assumed
+	// to be fully populated with data.	
 	ThreadData *ptr = p;
+	int fail,i;
 	
-	ptr->found = 0;
-	ptr->basepentas = NULL;
-	ptr->pentagons = NULL;
-
+	// a points to first node in block
+	while(ptr->block_count > 0) {
+		for(ptr->b=ptr->Nodes; ptr->b != NULL; ptr->b = ptr->b->next) {
+		if((ptr->b==ptr->a)||(NPTR(ptr->a)->primes[1] != NPTR(ptr->b)->primes[0])) continue;
+		fail=0;
+		for(i=1; i<4; i++) {
+			if(	(NPTR(ptr->b)->primes[i] == NPTR(ptr->a)->primes[0])||
+				(NPTR(ptr->b)->primes[i] == NPTR(ptr->a)->primes[2])||
+				(NPTR(ptr->b)->primes[i] == NPTR(ptr->a)->primes[3])) {
+				fail=1;
+				break;
+			}
+		}
+		if(fail==1) continue;
+		for(ptr->c=ptr->Nodes; ptr->c != NULL; ptr->c = ptr->c->next) {
+				if((ptr->c==ptr->b)||(ptr->c==ptr->a)||(NPTR(ptr->b)->primes[1] != NPTR(ptr->c)->primes[0])) continue;
+				if((NPTR(ptr->c)->primes[3] != NPTR(ptr->a)->primes[2])) continue;
+				fail=0;
+				for(i=1; i<3; i++) {
+					if(	(NPTR(ptr->c)->primes[i] == NPTR(ptr->a)->primes[0])||
+						(NPTR(ptr->c)->primes[i] == NPTR(ptr->a)->primes[1])||
+						(NPTR(ptr->c)->primes[i] == NPTR(ptr->a)->primes[3])||
+						(NPTR(ptr->c)->primes[i] == NPTR(ptr->b)->primes[2])||
+						(NPTR(ptr->c)->primes[i] == NPTR(ptr->b)->primes[3])) {
+						fail=1;
+						break;
+					}
+				}
+				if(fail==1) continue;
+				for(ptr->d=ptr->Nodes; ptr->d != NULL; ptr->d = ptr->d->next) {
+					if((ptr->d==ptr->c)||(ptr->d==ptr->b)||(ptr->d==ptr->a)) continue;
+					if(	// testing for link values
+						(NPTR(ptr->d)->primes[0] != NPTR(ptr->c)->primes[1])||
+						(NPTR(ptr->d)->primes[2] != NPTR(ptr->a)->primes[3])||
+						(NPTR(ptr->d)->primes[3] != NPTR(ptr->b)->primes[2])||
+						// testing for unique values
+						(NPTR(ptr->d)->primes[1] == NPTR(ptr->a)->primes[0])||
+						(NPTR(ptr->d)->primes[1] == NPTR(ptr->a)->primes[1])||
+						(NPTR(ptr->d)->primes[1] == NPTR(ptr->a)->primes[2])||
+						(NPTR(ptr->d)->primes[1] == NPTR(ptr->b)->primes[1])||
+						(NPTR(ptr->d)->primes[1] == NPTR(ptr->b)->primes[3])||
+						(NPTR(ptr->d)->primes[1] == NPTR(ptr->c)->primes[2])) continue;
+					for(ptr->e=ptr->Nodes; ptr->e != NULL; ptr->e = ptr->e->next) {
+						if((ptr->e==ptr->d)||(ptr->e==ptr->c)||(ptr->e==ptr->b)||(ptr->e==ptr->a)) continue;
+						if(	// testing for link values
+							(NPTR(ptr->e)->primes[0] != NPTR(ptr->d)->primes[1])||
+							(NPTR(ptr->e)->primes[1] != NPTR(ptr->a)->primes[0])||
+							(NPTR(ptr->e)->primes[2] != NPTR(ptr->b)->primes[3])||
+							(NPTR(ptr->e)->primes[3] != NPTR(ptr->c)->primes[2])) continue;
+						// a-b-c-d-e is a pentagon
+						// found a Pentagon
+						struct ring5 *working = malloc(sizeof(struct ring5));					
+						working->nodes[0] = NPTR(ptr->a);							
+						working->nodes[1] = NPTR(ptr->b);
+						working->nodes[2] = NPTR(ptr->c);
+						working->nodes[3] = NPTR(ptr->d);
+						working->nodes[4] = NPTR(ptr->e);
+						// if this pentagon is already in list - ignore
+						if(add_Pentagon_to_list(&(ptr->pentagons),&(ptr->basepentas),working) == 1) ptr->found+=10;							
+						free(working);
+					} // e loop
+				} // d loop
+			} // c loop			
+		} // b loop
+		ptr->a = ptr->a->next;
+		ptr->block_count -= 1;
+	}
 	pthread_exit(ptr);
 }
 //----------------------------------------------------------------------
@@ -66,10 +132,14 @@ int searchPentagon_thread(GSList **Nodes, GSList **BasePentas, GSList **Pentagon
 	for(i=0; i<NTHREADS; i++) {
 		ptr = (ThreadData*)malloc(sizeof(ThreadData));
 		// Thread data block init section
-		ptr->nodes = Nodes;
-		ptr->index = i;
-		ptr->a = start_block_a;
 		
+		ptr->index = i;
+		ptr->found = 0;		
+		ptr->a = start_block_a;						// thread local pointer
+		ptr->b = ptr->c = ptr->d = ptr->e = NULL;	// thread local pointers
+		ptr->Nodes = *Nodes;	// Head 0f Nodes list
+		ptr->basepentas = ptr->pentagons = NULL;
+				
 		if(extra > 0) {
 			ptr->block_count = stride + 1;
 			extra -= 1;
@@ -78,6 +148,7 @@ int searchPentagon_thread(GSList **Nodes, GSList **BasePentas, GSList **Pentagon
 			ptr->block_count = stride;
 			start_block_a = g_slist_nth(start_block_a, stride);
 		}
+		
 		// End init section - launch thread
 		rc = pthread_create(&(id_array[i]), NULL, worker, (void*) ptr);
 		if(rc != 0)
@@ -85,7 +156,7 @@ int searchPentagon_thread(GSList **Nodes, GSList **BasePentas, GSList **Pentagon
 		// next thread
 	}	
 	// All threads launched
-		for(i=0; i<NTHREADS; i++) {
+	for(i=0; i<NTHREADS; i++) {
 		rc = pthread_join(id_array[i], &status);
 		printf("Thread index = %02d	",((ThreadData*)status)->index );
 		printf("Thread count = %02d	",((ThreadData*)status)->block_count);
