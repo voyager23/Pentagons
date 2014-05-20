@@ -102,7 +102,8 @@ void* worker(void *p) {
 						working->nodes[3] = NPTR(ptr->d);
 						working->nodes[4] = NPTR(ptr->e);
 						// if this pentagon is already in list - ignore
-						if(add_Pentagon_to_list(&(ptr->pentagons),&(ptr->basepentas),working) == 1) ptr->found+=10;							
+						if(add_Pentagon_to_list(&(ptr->pentagons),&(ptr->basepentas),working) == 1) 
+							ptr->found+=10;							
 						free(working);
 					} // e loop
 				} // d loop
@@ -118,12 +119,13 @@ int searchPentagon_thread(GSList **Nodes, GSList **BasePentas, GSList **Pentagon
 	
 	const int nNodes = g_slist_length(*Nodes);
 	
+	ThreadData *data_block[NTHREADS];
 	ThreadData *ptr;
 	int rc;
 	pthread_t id_array[NTHREADS];
 	void *status;
-	int stride, extra, i;
-	GSList *start_block_a;
+	int stride, extra, i, n_unique;
+	GSList *start_block_a, *data_ptr;
 	
 	stride = nNodes / NTHREADS;
 	extra  = nNodes % NTHREADS;
@@ -131,8 +133,8 @@ int searchPentagon_thread(GSList **Nodes, GSList **BasePentas, GSList **Pentagon
 	
 	for(i=0; i<NTHREADS; i++) {
 		ptr = (ThreadData*)malloc(sizeof(ThreadData));
-		// Thread data block init section
-		
+		data_block[i] = ptr;
+		// Thread data block init section		
 		ptr->index = i;
 		ptr->found = 0;		
 		ptr->a = start_block_a;						// thread local pointer
@@ -158,11 +160,24 @@ int searchPentagon_thread(GSList **Nodes, GSList **BasePentas, GSList **Pentagon
 	// All threads launched
 	for(i=0; i<NTHREADS; i++) {
 		rc = pthread_join(id_array[i], &status);
-		printf("Thread index = %02d	",((ThreadData*)status)->index );
-		printf("Thread count = %02d	",((ThreadData*)status)->block_count);
-		printf("Thread found = %02d\n", ((ThreadData*)status)->found);
+#if(0)
+		printf("Thread %02d	",((ThreadData*)status)->index );
+		printf("count = %02d  ",((ThreadData*)status)->block_count);
+		printf("found = %04d  ", ((ThreadData*)status)->found);		
+		printf("nBasePentas = %04d\n", g_slist_length(((ThreadData*)status)->basepentas));
+#endif
 	}
-	
 	// All threads recovered
-	return 0;
+	
+	*BasePentas = *Pentagons = NULL;
+	n_unique = 0;
+	for(i=0; i<NTHREADS; i++) {
+		data_ptr = data_block[i]->basepentas;
+		while(data_ptr != NULL) {
+			n_unique += add_Pentagon_to_list(Pentagons, BasePentas, RPTR(data_ptr));
+			data_ptr = data_ptr->next;
+		}
+	}
+
+	return n_unique;	// number of unique pentagons
 }
