@@ -41,8 +41,6 @@ void searchPenta(int Target) {
 	
 	n_unique = searchPentagon_thread(&Nodes, &BasePentas, &Pentagons, Target);
 	
-	printf("Target: %3d  n_primes: %3d  n_nodes: %4d  n_unique: %4d\n", Target, n_primes,n_nodes, n_unique);
-	
 	// write data to file for use by graphics
 	sprintf(filename,"./DatFiles/Penta_%02d.dat",Target);
 	fp = fopen(filename,"w");
@@ -54,7 +52,7 @@ void searchPenta(int Target) {
 #if(0)
 	GSList *p = BasePentas;
 	while(p != NULL) {
-		printf("==========\n");
+		printf("========================================\n");
 		printRing5_compact(RPTR(p));
 		fprintf(fp,"Primes> ");
 		for(n=0;n<5;n++) {
@@ -67,4 +65,6 @@ void searchPenta(int Target) {
 	}
 	fclose(fp);
 #endif
+	printf("Target: %3d  n_primes: %3d  n_nodes: %4d  n_unique: %4d\n", 
+		Target, n_primes,n_nodes, n_unique);
 }

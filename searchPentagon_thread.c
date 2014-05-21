@@ -160,12 +160,6 @@ int searchPentagon_thread(GSList **Nodes, GSList **BasePentas, GSList **Pentagon
 	// All threads launched
 	for(i=0; i<NTHREADS; i++) {
 		rc = pthread_join(id_array[i], &status);
-#if(0)
-		printf("Thread %02d	",((ThreadData*)status)->index );
-		printf("count = %02d  ",((ThreadData*)status)->block_count);
-		printf("found = %04d  ", ((ThreadData*)status)->found);		
-		printf("nBasePentas = %04d\n", g_slist_length(((ThreadData*)status)->basepentas));
-#endif
 	}
 	// All threads recovered
 	
