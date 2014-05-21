@@ -102,6 +102,8 @@ void* worker(void *p) {
 						working->nodes[3] = NPTR(ptr->d);
 						working->nodes[4] = NPTR(ptr->e);
 						// if this pentagon is already in list - ignore
+						// (It is slightly faster to do a preliminary elimination here
+						// rather than do it all later)
 						if(add_Pentagon_to_list(&(ptr->pentagons),&(ptr->basepentas),working) == 1) 
 							ptr->found+=10;							
 						free(working);
