@@ -49,7 +49,7 @@ void searchPenta(int Target) {
 		exit(1);
 	}
 	fprintf(fp,"Target: %3d  n_primes: %3d  n_nodes: %4d  n_unique: %4d\n", Target, n_primes,n_nodes, g_slist_length(BasePentas));
-#if(0)
+#if(1)
 	GSList *p = BasePentas;
 	while(p != NULL) {
 		printf("========================================\n");

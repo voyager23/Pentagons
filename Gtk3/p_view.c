@@ -30,8 +30,8 @@
 #include "p_view.h"
 
 // define width and height of individual pentagon images
-const int width=400;
-const int height=400;
+const int width=240;
+const int height=240;
 const double scale_factor = 0.90;
 
 // used by print function
@@ -176,7 +176,7 @@ int main(int argc, char **argv)
 	
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled),GTK_POLICY_ALWAYS,GTK_POLICY_ALWAYS);
 	
-	gtk_container_add(GTK_CONTAINER(scrolled), grid);
+	gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(scrolled), grid);
 	
 	gtk_container_add(GTK_CONTAINER(window), scrolled);
 	
