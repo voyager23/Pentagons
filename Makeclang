@@ -1,18 +1,19 @@
-# Makefile for Pentagons
+# Makeclang for Pentagons
+# This uses the LLVM/Clang toolchain
 
 # setup for 32/64 bits
 arch = $(shell uname -m)
 
 ifeq ($(arch), x86_64)
-	CFLAGS = -Wall -g -m64 -std=c99 -O2
+	CFLAGS = -Wall -g -m64 -std=c99 -O1
 	
 	INC = -I/usr/include/glib-2.0 -I/usr/lib64/glib-2.0/include
 	
-	LIB = -L/usr/lib64 -lglib-2.0 -Wl,-rpath=/usr/lib64
+	LIB = -L/usr/lib64 -lglib-2.0 -Wl,-rpath=/usr/lib64 
 	
 	RPATH = 
 else
-	CFLAGS = -Wall -g -m32 -std=c99 -O2
+	CFLAGS = -Wall -g -m32 -std=c99 -O1
 	
 	INC = -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include	
 	
@@ -37,10 +38,10 @@ OBJS =	searchPenta.o \
 #----------default target-----------
 
 penta: penta.c $(OBJS) $(DEPS)
-	gcc $< $(CFLAGS) $(INC) $(LIB) $(OBJS) -o $@
+	clang $< $(CFLAGS) $(INC) $(LIB) $(OBJS) -o $@
 	mv *.o ./objs
 	
 #-----------object files------------
 
 %.o : %.c
-	gcc -c $< $(CFLAGS) $(INC) -o $@	
+	clang -c $< $(CFLAGS) $(INC)  -o $@	
