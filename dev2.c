@@ -1,4 +1,4 @@
-/*
+ /*
  * dev2.c
  * 
  * Copyright 2014 Michael <michael.tate@wanadoo.fr>
@@ -21,6 +21,8 @@
  * Scan the entire list of pentagons looking for a pentagon
  * which matches the "internal-inverted" pentagon.
  * Note: No matches found. mjt-26/05/14
+ * 
+ * Complete revision using a table of indexes to set up candidates
  */
 
 
