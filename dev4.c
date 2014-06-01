@@ -1,5 +1,5 @@
 /*
- * dev3.c
+ * dev4.c
  * 
  * Copyright 2014 Michael <michael.tate@wanadoo.fr>
  * 
@@ -108,7 +108,7 @@ int main(int argc, char **argv)
 	FILE *fp;
 	char filename[80];
 	GSList *Source=NULL, *Scan=NULL;
-	int i,j,k,match;
+	int i,j,k,match,count;
 	
 	int base[5], working[5], query[5];
 	
@@ -126,6 +126,7 @@ int main(int argc, char **argv)
 	fclose(fp);
 	
 	// main search loop
+	count=0;
 	while(Source != NULL) {
 		
 		// fill the base array
@@ -148,6 +149,7 @@ int main(int argc, char **argv)
 						break;
 					}
 				}
+				count+=1;
 				if(match==1) {
 					printf("+");
 					// print "\n"
@@ -161,6 +163,7 @@ int main(int argc, char **argv)
 		} //for i
 		Source = Source->next;
 	}
+	printf("\nComplete - %d trials.\n",count);
 }
 		
 		
