@@ -43,6 +43,9 @@ penta: penta.c $(OBJS) $(DEPS)
 #-----------developement targets----
 dev2: dev2.c
 	gcc dev2.c $(CFLAGS) $(INC) $(LIB) -o dev2
+	
+dev4: dev4.c
+	gcc dev4.c $(CFLAGS) $(INC) $(LIB) -o dev4
 #-----------object files------------
 
 %.o : %.c
