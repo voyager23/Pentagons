@@ -38,7 +38,7 @@ typedef struct thread_data {
 
 void* worker_e(void *);
 void* worker_e(void *p) {	
-	return NULL;
+	pthread_exit(NULL);
 }
 
 int searchPentagonLinkedList_threads(GSList **Nodes, GSList **BasePentas, GSList **Pentagons, int Target) {
@@ -107,14 +107,16 @@ int searchPentagonLinkedList_threads(GSList **Nodes, GSList **BasePentas, GSList
 					}
 					// 
 					for(e=*Nodes; e != NULL; e = e->next) {
-						//
+						//--------------------------------
+						printf("Launching threads...");
 						for(t=0; t<NTHREADS; t++) {
 							tdb[t].e = g_slist_nth(e,t);
 							tdb[t].found=0;
 							tdb[t].offset_e=t;
 							pthread_create( &(tdb[t].thread_id), NULL, worker_e, p_tdb);
 						}
-						
+						printf("completed\n");						
+						//---------------------------------
 						if((e==d)||(e==c)||(e==b)||(e==a)) continue;
 						if(	// testing for link values
 							(NPTR(e)->primes[0] != NPTR(d)->primes[1])||

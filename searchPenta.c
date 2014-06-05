@@ -39,7 +39,7 @@ void searchPenta(int Target) {
 	
 	n_nodes = searchNodesLinkedList(&Primes, &Nodes, Target);
 	
-	(void)searchPentagonLinkedList(&Nodes, &BasePentas, &Pentagons, Target);
+	(void)searchPentagonLinkedList_threads(&Nodes, &BasePentas, &Pentagons, Target);
 	
 	printf("Target: %3d  n_primes: %3d  n_nodes: %4d  n_unique: %4d\n", Target, n_primes,n_nodes, g_slist_length(BasePentas));
 	
