@@ -29,20 +29,20 @@ void searchPenta(int Target) {
 	GSList *Nodes  = NULL;	
 	GSList *Pentagons = NULL;
 	GSList *BasePentas = NULL;
+	GSList *p = NULL;
 	FILE *fp;
 	char filename[128];
 	int n,pr;
-	int n_primes, n_nodes;
+	int n_primes, n_nodes, n_unique;
 	int HiPrime = Target + 2;
 	
 	n_primes = setupPrimeLinkedList(&Primes, HiPrime);
 	
 	n_nodes = searchNodesLinkedList(&Primes, &Nodes, Target);
 	
-	(void)searchPentagonLinkedList_threads(&Nodes, &BasePentas, &Pentagons, Target);
+	n_unique = searchPentagon_thread(&Nodes, &BasePentas, &Pentagons, Target);
 	
-	printf("Target: %3d  n_primes: %3d  n_nodes: %4d  n_unique: %4d\n", Target, n_primes,n_nodes, g_slist_length(BasePentas));
-	
+#if(1)	
 	// write data to file for use by graphics
 	sprintf(filename,"./DatFiles/Penta_%02d.dat",Target);
 	fp = fopen(filename,"w");
@@ -51,9 +51,10 @@ void searchPenta(int Target) {
 		exit(1);
 	}
 	fprintf(fp,"Target: %3d  n_primes: %3d  n_nodes: %4d  n_unique: %4d\n", Target, n_primes,n_nodes, g_slist_length(BasePentas));
-	GSList *p = BasePentas;
+
+	p = BasePentas;
 	while(p != NULL) {
-		printf("==========\n");
+		printf("========================================\n");
 		printRing5_compact(RPTR(p));
 		fprintf(fp,"Primes> ");
 		for(n=0;n<5;n++) {
@@ -65,4 +66,35 @@ void searchPenta(int Target) {
 		p = p->next;
 	}
 	fclose(fp);
+#endif
+// Developement code block
+#if(0)
+	// dev code: write all pentagon data to file
+	// write data to file for use by graphics
+	sprintf(filename,"./DatFiles/Penta_%02d.all",Target);
+	fp = fopen(filename,"w");
+	if(fp==NULL) {
+		printf("Failed to open %s - stopping\n",filename);
+		exit(1);
+	}
+	fprintf(fp,"Target: %3d  All pentagons.\n", Target);
+
+	p = Pentagons;
+	while(p != NULL) {
+		printf("========================================\n");
+		printRing5_compact(RPTR(p));
+		fprintf(fp,"Primes> ");
+		for(n=0;n<5;n++) {
+			for(pr=0;pr<4;pr++) {
+				fprintf(fp,"%02d,", RPTR(p)->nodes[n]->primes[pr]);
+			}
+		}
+		fprintf(fp,"\n");		
+		p = p->next;
+	}
+	fclose(fp);
+#endif
+
+	printf("Target: %3d  n_primes: %3d  n_nodes: %4d  n_unique: %4d\n", 
+		Target, n_primes,n_nodes, n_unique);
 }

@@ -30,9 +30,9 @@
 #include "p_view.h"
 
 // define width and height of individual pentagon images
-const int width=400;
-const int height=400;
-const double scale_factor = 0.90;
+const int width=220;
+const int height=240;
+const double scale_factor = 0.95;
 
 // used by print function
 const int GroupSize = 10;
@@ -49,16 +49,16 @@ node_scale[5][2] = {{0.500,0.000},	// a
 // first five are the outer primes (nodes)
 // next five are the inner primes (spokes)
 const double
-prime_scale[10][2] = {	{0.290,0.182},	//a_p1
+prime_scale[10][2] = {	{0.140,0.182},	//a_p1
 						{0.470,0.350},	//a_p2
-						{0.650,0.182},	//b_p1
+						{0.780,0.182},	//b_p1
 						{0.655,0.476},	//b_p2
-						{0.850,0.657},	//c_p1
-						{0.610,0.690},	//c_p2		
-						{0.500,0.951},	//d_p1
-						{0.330,0.690},	//d_p2
+						{0.800,0.657},	//c_p1
+						{0.600,0.710},	//c_p2		
+						{0.450,0.930},	//d_p1
+						{0.300,0.710},	//d_p2
 						{0.095,0.657},	//e_p1
-						{0.290,0.476}};	//e_p2
+						{0.245,0.476}};	//e_p2
 
 Surface_Data *surfaces;			
 
@@ -80,9 +80,16 @@ int main(int argc, char **argv)
 	FILE *fp;
 	char filename[256];
 	char title[256];
-	int Target = atoi(argv[1]);
+	int Target=0;
 	
-	// look for .dat files in Parent Directory
+	// sanity check
+	if(argc != 2) {
+		printf("Usage: p_view nn\n");
+		exit(1);
+	}
+	
+	// try to open .dat file
+	Target= atoi(argv[1]);
 	sprintf(filename,"../DatFiles/Penta_%d.dat", Target);
 	printf("Looking for %s ... ", filename);
 	fp = fopen(filename,"r");
@@ -176,13 +183,13 @@ int main(int argc, char **argv)
 	
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled),GTK_POLICY_ALWAYS,GTK_POLICY_ALWAYS);
 	
-	gtk_container_add(GTK_CONTAINER(scrolled), grid);
+	gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(scrolled), grid);
 	
 	gtk_container_add(GTK_CONTAINER(window), scrolled);
 	
 	g_signal_connect(window, "destroy",G_CALLBACK (gtk_main_quit), NULL);
 	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
-	gtk_window_set_default_size(GTK_WINDOW(window), (width*4)+30, (height*2)+30); 
+	gtk_window_set_default_size(GTK_WINDOW(window), (width*4)+60, (height*2)+30); 
 	gtk_window_set_title(GTK_WINDOW(window), title);
 	gtk_widget_show_all(window);
 

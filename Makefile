@@ -4,7 +4,7 @@
 arch = $(shell uname -m)
 
 ifeq ($(arch), x86_64)
-	CFLAGS = -Wall -g -m64 -std=c99
+	CFLAGS = -Wall -g -m64 -std=c99 -O2
 	
 	INC = -I/usr/include/glib-2.0 -I/usr/lib64/glib-2.0/include
 	
@@ -31,9 +31,8 @@ DEPS =	penta.h
 OBJS =	searchPenta.o \
 		setupPrimeLinkedList.o \
 		searchNodesLinkedList.o \
-		searchPentagonLinkedList.o \
 		utilities.o \
-		searchPentagonLinkedList_threads.o
+		searchPentagon_thread.o
 
 #----------default target-----------
 
@@ -41,7 +40,13 @@ penta: penta.c $(OBJS) $(DEPS)
 	gcc $< $(CFLAGS) $(INC) $(LIB) $(OBJS) -o $@
 	mv *.o ./objs
 	
+#-----------developement targets----
+dev2: dev2.c
+	gcc dev2.c $(CFLAGS) $(INC) $(LIB) -o dev2
+	
+dev4: dev4.c
+	gcc dev4.c $(CFLAGS) $(INC) $(LIB) -o dev4
 #-----------object files------------
 
 %.o : %.c
-	gcc -c $< $(CFLAGS) $(INC) $(LIB) -o $@	
+	gcc -c $< $(CFLAGS) $(INC) -o $@	

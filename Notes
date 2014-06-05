@@ -1,3 +1,72 @@
+// index table for base to working
+00 01 02 03 04 
+00 04 03 02 01 
+02 01 00 04 03 
+04 03 02 01 00 
+01 00 04 03 02 
+03 02 01 00 04 
+
+04 00 01 02 03 
+04 03 02 01 00 
+01 00 04 03 02 
+03 02 01 00 04 
+00 04 03 02 01 
+02 01 00 04 03 
+
+03 04 00 01 02 
+03 02 01 00 04 
+00 04 03 02 01 
+02 01 00 04 03 
+04 03 02 01 00 
+01 00 04 03 02 
+
+02 03 04 00 01 
+02 01 00 04 03 
+04 03 02 01 00 
+01 00 04 03 02 
+03 02 01 00 04 
+00 04 03 02 01 
+
+01 02 03 04 00 
+01 00 04 03 02 
+03 02 01 00 04 
+00 04 03 02 01 
+02 01 00 04 03 
+04 03 02 01 00 
+
+00 01 02 03 04 
+
+//----------------------------------------------------------------------
+					for(e=*Nodes; e != NULL; e = e->next) {
+						//
+						for(t=0; t<NTHREADS; t++) {
+							tdb[t].e = g_slist_nth(e,t);
+							tdb[t].found=0;
+							tdb[t].offset_e=t;
+							//pthread_create( &(tdb[t].thread_id), NULL, worker_e, p_tdb);
+						}
+						
+						if((e==d)||(e==c)||(e==b)||(e==a)) continue;
+						if(	// testing for link values
+							(NPTR(e)->primes[0] != NPTR(d)->primes[1])||
+							(NPTR(e)->primes[1] != NPTR(a)->primes[0])||
+							(NPTR(e)->primes[2] != NPTR(b)->primes[3])||
+							(NPTR(e)->primes[3] != NPTR(c)->primes[2])) continue;
+						// a-b-c-d-e is a pentagon
+						// found a Pentagon
+						struct ring5 *working = malloc(sizeof(struct ring5));					
+						working->nodes[0] = NPTR(a);							
+						working->nodes[1] = NPTR(b);
+						working->nodes[2] = NPTR(c);
+						working->nodes[3] = NPTR(d);
+						working->nodes[4] = NPTR(e);
+						// if this pentagon is already in list - ignore
+						if(add_Pentagon_to_list(Pentagons,BasePentas,working) == 1) n_pentagons+=10;							
+						free(working);
+					} // e loop
+//----------------------------------------------------------------------
+
+
 [mike@europa Pentagon]$ ./penta 
 Using default Target 84.
 Target:  84  n_primes:  24  n_nodes:  936  n_unique:   12
